@@ -1,5 +1,6 @@
 package com.focusclinic.app.di
 
+import com.focusclinic.app.presentation.screens.clinic.ClinicViewModel
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -17,6 +18,14 @@ val presentationModule = module {
             completeFocusSession = get(),
             interruptFocusSession = get(),
             getUserStats = get(),
+            scope = get(),
+        )
+    }
+
+    factory {
+        ClinicViewModel(
+            getUserStats = get(),
+            inventoryRepository = get(),
             scope = get(),
         )
     }

@@ -50,6 +50,21 @@ object Strings {
     const val SHOP_YES = "Yes"
     const val SHOP_NO = "No"
 
+    // Clinic Screen
+    const val CLINIC_TITLE = "My Clinic"
+    const val CLINIC_LEVEL = "Level"
+    const val CLINIC_XP_PROGRESS = "XP Progress"
+    const val CLINIC_XP_TO_NEXT = "XP to next level"
+    const val CLINIC_MAX_LEVEL = "Max Level Reached!"
+    const val CLINIC_MULTIPLIERS = "Active Multipliers"
+    const val CLINIC_XP_MULTIPLIER = "XP Multiplier"
+    const val CLINIC_COIN_MULTIPLIER = "Coin Multiplier"
+    const val CLINIC_EQUIPMENT = "Equipment"
+    const val CLINIC_DECORATIONS = "Decorations"
+    const val CLINIC_EMPTY_ROOM = "Your clinic is empty. Visit the shop!"
+    const val CLINIC_NO_EQUIPMENT = "No equipment yet"
+    const val CLINIC_NO_DECORATIONS = "No decorations yet"
+
     // Content Descriptions
     const val CD_TIMER = "Session timer"
     const val CD_PATIENT = "Patient status"

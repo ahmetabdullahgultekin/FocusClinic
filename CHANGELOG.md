@@ -48,6 +48,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Snackbar notifications for purchase success and error feedback.
   - FAB for creating new custom rewards.
   - Emoji-based item icons and modifier labels (e.g., "+10% XP", "Decor").
+- **Clinic Feature (Step 7):**
+  - `ClinicViewModel` — Observes user stats and inventory via reactive Flows.
+  - `ClinicState` — Player level, XP progress (with next-level calculation), multipliers, equipment/decorations split.
+  - Clinic room visual with emoji-based item grid (FlowRow) and empty-state hospital icon.
+  - Player level card with animated XP progress bar, level number, title, and level-specific emoji.
+  - Active multipliers card showing XP and Coin multiplier values.
+  - Inventory sections for Equipment and Decorations with item lists.
 - Architecture Design Document (`ADD.md`) — full project specification.
 - Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, git workflow.
 

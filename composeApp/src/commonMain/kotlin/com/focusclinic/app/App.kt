@@ -22,6 +22,7 @@ import com.focusclinic.app.navigation.BottomNavItem
 import com.focusclinic.app.navigation.RootComponent
 import com.focusclinic.app.navigation.Screen
 import com.focusclinic.app.presentation.screens.clinic.ClinicScreen
+import com.focusclinic.app.presentation.screens.clinic.ClinicViewModel
 import com.focusclinic.app.presentation.screens.focus.FocusScreen
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopScreen
@@ -76,7 +77,10 @@ fun App(
                                 val viewModel = koinInject<FocusViewModel>()
                                 FocusScreen(viewModel = viewModel)
                             }
-                            Screen.Clinic -> ClinicScreen()
+                            Screen.Clinic -> {
+                                val clinicViewModel = koinInject<ClinicViewModel>()
+                                ClinicScreen(viewModel = clinicViewModel)
+                            }
                             Screen.Shop -> {
                                 val shopViewModel = koinInject<ShopViewModel>()
                                 ShopScreen(viewModel = shopViewModel)
