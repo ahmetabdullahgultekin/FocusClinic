@@ -50,6 +50,10 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
+            // Lifecycle
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.lifecycle.common)
+
             // Navigation
             implementation(libs.decompose.core)
             implementation(libs.decompose.compose)
@@ -58,6 +62,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.sqldelight.android.driver)
+            implementation(libs.koin.android)
         }
 
         iosMain.dependencies {

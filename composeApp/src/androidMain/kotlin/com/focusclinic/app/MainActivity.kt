@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.arkivanov.decompose.defaultComponentContext
 import com.focusclinic.app.navigation.RootComponent
+import org.koin.android.ext.koin.androidContext
 
 class MainActivity : ComponentActivity() {
 
@@ -16,7 +17,10 @@ class MainActivity : ComponentActivity() {
         val rootComponent = RootComponent(defaultComponentContext())
 
         setContent {
-            App(rootComponent)
+            App(
+                rootComponent = rootComponent,
+                koinSetup = { androidContext(this@MainActivity.applicationContext) },
+            )
         }
     }
 }

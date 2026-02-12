@@ -28,6 +28,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Material 3 theme (Teal + Soft Blue palette).
   - Android entry point (`MainActivity`) and iOS entry point (`MainViewController`).
   - Placeholder screens for all 4 tabs.
+- **Focus Feature (Step 5):**
+  - MVI architecture: `FocusIntent`, `FocusState` (with `FocusPhase` sealed interface), `FocusViewModel`.
+  - Coroutine-based countdown timer with 1-second tick interval.
+  - Duration selector with predefined options (5, 10, 15, 25, 45, 60 min).
+  - Circular timer ring with animated progress arc.
+  - Patient visual with state-driven emoji (waiting, treating, happy, angry).
+  - Session result card showing earned XP and Coins.
+  - Grace period logic for app backgrounding (10-second tolerance before interruption).
+  - `expect/actual` lifecycle observer: Android (`LifecycleEventObserver`), iOS (`NSNotificationCenter`).
+  - Koin DI: `presentationModule` for ViewModel, `platformModule` for DriverFactory (expect/actual).
+  - Centralized UI strings in `Strings` object (no hardcoded strings).
 - Architecture Design Document (`ADD.md`) — full project specification.
 - Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, git workflow.
 
