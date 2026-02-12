@@ -22,7 +22,13 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class, kotlin.time.ExperimentalTime::class)
 val dataModule = module {
 
-    single<FocusClinicDatabase> { createDatabase(get()) }
+    single<FocusClinicDatabase> {
+        createDatabase(get()).also { db ->
+            db.userProfileQueries.insertProfile(
+                created_at = Clock.System.now().toEpochMilliseconds(),
+            )
+        }
+    }
 
     single<() -> String>(named("uuid")) { { Uuid.random().toString() } }
     single<() -> Long>(named("clock")) { { Clock.System.now().toEpochMilliseconds() } }
