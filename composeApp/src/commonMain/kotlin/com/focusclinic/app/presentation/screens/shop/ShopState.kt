@@ -10,6 +10,7 @@ data class ShopState(
     val ownedItemIds: Set<String> = emptySet(),
     val customRewards: List<CustomReward> = emptyList(),
     val balance: Coin = Coin.ZERO,
+    val isProcessing: Boolean = false,
     val errorMessage: String? = null,
     val purchaseSuccessMessage: String? = null,
 )

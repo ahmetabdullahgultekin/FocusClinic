@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,6 +34,16 @@ import com.focusclinic.domain.model.SessionStatus
 @Composable
 fun StatsScreen(viewModel: StatsViewModel) {
     val state by viewModel.state.collectAsState()
+
+    if (state.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -65,7 +76,10 @@ fun StatsScreen(viewModel: StatsViewModel) {
             item { EmptyHistoryMessage() }
         } else {
             items(state.sessions, key = { it.id }) { session ->
-                SessionCard(session = session)
+                SessionCard(
+                    session = session,
+                    modifier = Modifier.animateItem(),
+                )
             }
         }
 
@@ -223,8 +237,11 @@ private fun VerticalDivider() {
 }
 
 @Composable
-private fun SessionCard(session: FocusSession) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+private fun SessionCard(
+    session: FocusSession,
+    modifier: Modifier = Modifier,
+) {
+    Card(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

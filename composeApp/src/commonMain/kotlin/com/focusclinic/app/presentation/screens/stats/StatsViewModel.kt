@@ -39,7 +39,7 @@ class StatsViewModel(
     private fun observeSessionHistory() {
         scope.launch {
             sessionRepository.observeSessionHistory().collect { sessions ->
-                _state.update { it.copy(sessions = sessions) }
+                _state.update { it.copy(sessions = sessions, isLoading = false) }
             }
         }
     }

@@ -1,5 +1,12 @@
 package com.focusclinic.app.presentation.screens.shop
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -116,19 +123,28 @@ fun ShopScreen(viewModel: ShopViewModel) {
                 }
             }
 
-            when (state.selectedTab) {
-                ShopTab.VIRTUAL_SHOP -> VirtualShopContent(
-                    items = state.shopItems,
-                    ownedItemIds = state.ownedItemIds,
-                    balance = state.balance.amount,
-                    onPurchase = { viewModel.onIntent(ShopIntent.PurchaseItem(it)) },
-                )
-                ShopTab.CUSTOM_REWARDS -> CustomRewardsContent(
-                    rewards = state.customRewards,
-                    balance = state.balance.amount,
-                    onRedeem = { viewModel.onIntent(ShopIntent.PurchaseReward(it)) },
-                    onDelete = { viewModel.onIntent(ShopIntent.DeleteReward(it)) },
-                )
+            AnimatedContent(
+                targetState = state.selectedTab,
+                transitionSpec = {
+                    fadeIn(tween(250)) togetherWith fadeOut(tween(250))
+                },
+            ) { tab ->
+                when (tab) {
+                    ShopTab.VIRTUAL_SHOP -> VirtualShopContent(
+                        items = state.shopItems,
+                        ownedItemIds = state.ownedItemIds,
+                        balance = state.balance.amount,
+                        isProcessing = state.isProcessing,
+                        onPurchase = { viewModel.onIntent(ShopIntent.PurchaseItem(it)) },
+                    )
+                    ShopTab.CUSTOM_REWARDS -> CustomRewardsContent(
+                        rewards = state.customRewards,
+                        balance = state.balance.amount,
+                        isProcessing = state.isProcessing,
+                        onRedeem = { viewModel.onIntent(ShopIntent.PurchaseReward(it)) },
+                        onDelete = { viewModel.onIntent(ShopIntent.DeleteReward(it)) },
+                    )
+                }
             }
         }
     }
@@ -172,6 +188,7 @@ private fun VirtualShopContent(
     items: List<ShopItem>,
     ownedItemIds: Set<String>,
     balance: Long,
+    isProcessing: Boolean,
     onPurchase: (ShopItem) -> Unit,
 ) {
     LazyColumn(
@@ -182,8 +199,9 @@ private fun VirtualShopContent(
             ShopItemCard(
                 item = item,
                 isOwned = item.id in ownedItemIds,
-                canAfford = balance >= item.cost.amount,
+                canAfford = balance >= item.cost.amount && !isProcessing,
                 onPurchase = { onPurchase(item) },
+                modifier = Modifier.animateItem(),
             )
         }
     }
@@ -195,9 +213,10 @@ private fun ShopItemCard(
     isOwned: Boolean,
     canAfford: Boolean,
     onPurchase: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
             containerColor = if (isOwned) MaterialTheme.colorScheme.surfaceVariant
             else MaterialTheme.colorScheme.surface,
@@ -264,6 +283,7 @@ private fun ShopItemCard(
 private fun CustomRewardsContent(
     rewards: List<CustomReward>,
     balance: Long,
+    isProcessing: Boolean,
     onRedeem: (String) -> Unit,
     onDelete: (String) -> Unit,
 ) {
@@ -286,9 +306,10 @@ private fun CustomRewardsContent(
             items(rewards, key = { it.id }) { reward ->
                 RewardCard(
                     reward = reward,
-                    canAfford = balance >= reward.cost.amount,
+                    canAfford = balance >= reward.cost.amount && !isProcessing,
                     onRedeem = { onRedeem(reward.id) },
                     onDelete = { onDelete(reward.id) },
+                    modifier = Modifier.animateItem(),
                 )
             }
         }
@@ -301,10 +322,11 @@ private fun RewardCard(
     canAfford: Boolean,
     onRedeem: () -> Unit,
     onDelete: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
-    Card(modifier = Modifier.fillMaxWidth()) {
+    Card(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

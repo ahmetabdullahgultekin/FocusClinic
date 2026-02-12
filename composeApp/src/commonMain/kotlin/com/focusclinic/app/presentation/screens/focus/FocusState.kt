@@ -15,6 +15,7 @@ data class FocusState(
     val xpMultiplier: Multiplier = Multiplier.BASE,
     val coinMultiplier: Multiplier = Multiplier.BASE,
     val sessionResult: SessionResult? = null,
+    val errorMessage: String? = null,
 ) {
     val progress: Float
         get() = if (totalSeconds > 0) remainingSeconds.toFloat() / totalSeconds else 0f

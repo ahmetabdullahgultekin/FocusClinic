@@ -9,4 +9,5 @@ sealed interface FocusIntent {
     data object DismissResult : FocusIntent
     data object AppBackgrounded : FocusIntent
     data object AppResumed : FocusIntent
+    data object DismissError : FocusIntent
 }

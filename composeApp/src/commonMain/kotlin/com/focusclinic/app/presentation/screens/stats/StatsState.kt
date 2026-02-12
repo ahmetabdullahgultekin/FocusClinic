@@ -10,6 +10,7 @@ data class StatsState(
     val totalXp: ExperiencePoints = ExperiencePoints.ZERO,
     val balance: Coin = Coin.ZERO,
     val playerLevel: PlayerLevel = PlayerLevel.INTERN,
+    val isLoading: Boolean = true,
 ) {
     val totalSessions: Int
         get() = sessions.size

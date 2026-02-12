@@ -63,6 +63,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Session history list with status emoji, duration, earned XP/Coins per session.
   - Empty state message when no sessions exist.
   - Helper functions: `formatDuration()`, `statusEmoji()`, `statusLabel()`, `levelEmoji()`.
+- **Polish (Step 9):**
+  - Navigation crossfade animation via Decompose `stackAnimation(fade())`.
+  - Animated tab content transitions in ShopScreen (`AnimatedContent` with fade).
+  - `animateItem()` on LazyColumn items in ShopScreen and StatsScreen for smooth list animations.
+  - Dark mode support with `isSystemInDarkTheme()` — complementary dark palette (Teal 200/Blue 200 tones).
+  - `isProcessing` guard in ShopViewModel to prevent double-tap purchases.
+  - Error feedback in FocusViewModel when session start fails (Snackbar via `errorMessage` state).
+  - Input validation in ShopViewModel's `createReward()` (blank title, zero/negative cost).
+  - Loading state in StatsScreen with `CircularProgressIndicator` while session history loads.
 - Architecture Design Document (`ADD.md`) — full project specification.
 - Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, git workflow.
 

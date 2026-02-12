@@ -73,35 +73,50 @@ class ShopViewModel(
     }
 
     private fun purchaseItem(item: ShopItem) {
+        if (_state.value.isProcessing) return
+        _state.update { it.copy(isProcessing = true) }
+
         scope.launch {
-            when (val result = purchaseShopItem(item)) {
-                is DomainResult.Success -> {
-                    _state.update { it.copy(purchaseSuccessMessage = item.name) }
+            try {
+                when (val result = purchaseShopItem(item)) {
+                    is DomainResult.Success -> {
+                        _state.update { it.copy(purchaseSuccessMessage = item.name) }
+                    }
+                    is DomainResult.Failure -> {
+                        _state.update { it.copy(errorMessage = result.error.message) }
+                    }
                 }
-                is DomainResult.Failure -> {
-                    _state.update { it.copy(errorMessage = result.error.message) }
-                }
+            } finally {
+                _state.update { it.copy(isProcessing = false) }
             }
         }
     }
 
     private fun purchaseReward(rewardId: String) {
+        if (_state.value.isProcessing) return
+        _state.update { it.copy(isProcessing = true) }
+
         scope.launch {
-            val rewardName = _state.value.customRewards.find { it.id == rewardId }?.title
-            when (val result = purchaseCustomReward(rewardId)) {
-                is DomainResult.Success -> {
-                    _state.update { it.copy(purchaseSuccessMessage = rewardName) }
+            try {
+                val rewardName = _state.value.customRewards.find { it.id == rewardId }?.title
+                when (val result = purchaseCustomReward(rewardId)) {
+                    is DomainResult.Success -> {
+                        _state.update { it.copy(purchaseSuccessMessage = rewardName) }
+                    }
+                    is DomainResult.Failure -> {
+                        _state.update { it.copy(errorMessage = result.error.message) }
+                    }
                 }
-                is DomainResult.Failure -> {
-                    _state.update { it.copy(errorMessage = result.error.message) }
-                }
+            } finally {
+                _state.update { it.copy(isProcessing = false) }
             }
         }
     }
 
     private fun createReward(title: String, cost: Long) {
+        if (title.isBlank() || cost <= 0) return
         scope.launch {
-            saveCustomReward(title, cost)
+            saveCustomReward(title.trim(), cost)
         }
     }
 

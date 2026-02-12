@@ -34,10 +34,15 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -56,32 +61,44 @@ import com.focusclinic.domain.valueobject.FocusDuration
 @Composable
 fun FocusScreen(viewModel: FocusViewModel) {
     val state by viewModel.state.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     AppLifecycleObserver(
         onBackground = { viewModel.onIntent(FocusIntent.AppBackgrounded) },
         onForeground = { viewModel.onIntent(FocusIntent.AppResumed) },
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedContent(
-            targetState = state.phase,
-            transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
-            contentKey = { it::class },
-        ) { phase ->
-            when (phase) {
-                FocusPhase.Idle -> IdleContent(
-                    state = state,
-                    onSelectDuration = { viewModel.onIntent(FocusIntent.SelectDuration(it)) },
-                    onStart = { viewModel.onIntent(FocusIntent.StartSession) },
-                )
-                FocusPhase.Focusing -> FocusingContent(
-                    state = state,
-                    onCancel = { viewModel.onIntent(FocusIntent.CancelSession) },
-                )
-                FocusPhase.Completed, FocusPhase.Interrupted -> ResultContent(
-                    state = state,
-                    onDismiss = { viewModel.onIntent(FocusIntent.DismissResult) },
-                )
+    LaunchedEffect(state.errorMessage) {
+        state.errorMessage?.let { error ->
+            snackbarHostState.showSnackbar(error)
+            viewModel.onIntent(FocusIntent.DismissError)
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            AnimatedContent(
+                targetState = state.phase,
+                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                contentKey = { it::class },
+            ) { phase ->
+                when (phase) {
+                    FocusPhase.Idle -> IdleContent(
+                        state = state,
+                        onSelectDuration = { viewModel.onIntent(FocusIntent.SelectDuration(it)) },
+                        onStart = { viewModel.onIntent(FocusIntent.StartSession) },
+                    )
+                    FocusPhase.Focusing -> FocusingContent(
+                        state = state,
+                        onCancel = { viewModel.onIntent(FocusIntent.CancelSession) },
+                    )
+                    FocusPhase.Completed, FocusPhase.Interrupted -> ResultContent(
+                        state = state,
+                        onDismiss = { viewModel.onIntent(FocusIntent.DismissResult) },
+                    )
+                }
             }
         }
     }

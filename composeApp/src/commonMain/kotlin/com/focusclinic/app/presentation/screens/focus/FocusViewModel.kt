@@ -47,6 +47,7 @@ class FocusViewModel(
             FocusIntent.DismissResult -> dismissResult()
             FocusIntent.AppBackgrounded -> onAppBackgrounded()
             FocusIntent.AppResumed -> onAppResumed()
+            FocusIntent.DismissError -> _state.update { it.copy(errorMessage = null) }
         }
     }
 
@@ -88,7 +89,9 @@ class FocusViewModel(
                     }
                     startTimer()
                 }
-                is DomainResult.Failure -> Unit
+                is DomainResult.Failure -> {
+                    _state.update { it.copy(errorMessage = result.error.message) }
+                }
             }
         }
     }

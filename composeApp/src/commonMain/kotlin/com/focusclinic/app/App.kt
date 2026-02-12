@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.stack.Children
+import com.arkivanov.decompose.extensions.compose.stack.animation.fade
+import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.focusclinic.app.di.dataModule
 import com.focusclinic.app.di.domainModule
@@ -72,6 +74,7 @@ fun App(
                     Children(
                         stack = childStack,
                         modifier = Modifier.padding(paddingValues),
+                        animation = stackAnimation(fade()),
                     ) { child ->
                         when (child.instance) {
                             Screen.Focus -> {
