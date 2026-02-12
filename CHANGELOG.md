@@ -72,6 +72,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Error feedback in FocusViewModel when session start fails (Snackbar via `errorMessage` state).
   - Input validation in ShopViewModel's `createReward()` (blank title, zero/negative cost).
   - Loading state in StatsScreen with `CircularProgressIndicator` while session history loads.
+- **Domain Unit Tests:**
+  - Fake repository implementations (`FakeRepositories.kt`) for all 5 repository ports using `MutableStateFlow`.
+  - Value object tests: `CoinTest` (7), `ExperiencePointsTest` (5), `FocusDurationTest` (7), `MultiplierTest` (6).
+  - Business rule tests: `PlayerLevelTest` (9), `RewardCalculatorTest` (9), `MultiplierCalculatorTest` (8).
+  - Use case tests: `StartFocusSessionUseCaseTest` (7), `CompleteFocusSessionUseCaseTest` (8), `InterruptFocusSessionUseCaseTest` (8), `PurchaseShopItemUseCaseTest` (7), `PurchaseCustomRewardUseCaseTest` (4), `SaveCustomRewardUseCaseTest` (7), `DeactivateCustomRewardUseCaseTest` (2), `GetUserStatsUseCaseTest` (4).
+  - 15 test suites, 90+ test cases covering value objects, business rules, and all use cases.
 - Architecture Design Document (`ADD.md`) — full project specification.
 - Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, git workflow.
 
