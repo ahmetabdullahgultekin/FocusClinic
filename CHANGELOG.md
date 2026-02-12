@@ -39,6 +39,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `expect/actual` lifecycle observer: Android (`LifecycleEventObserver`), iOS (`NSNotificationCenter`).
   - Koin DI: `presentationModule` for ViewModel, `platformModule` for DriverFactory (expect/actual).
   - Centralized UI strings in `Strings` object (no hardcoded strings).
+- **Shop Feature (Step 6):**
+  - `ShopCatalog` — 8 predefined clinic items (4 equipment with XP/Coin bonuses, 4 decorations).
+  - `SaveCustomRewardUseCase`, `DeactivateCustomRewardUseCase` — CRUD for user-created rewards.
+  - MVI architecture: `ShopIntent`, `ShopState`, `ShopViewModel` with reactive balance/inventory/rewards.
+  - Two-tab UI: Virtual Shop (item cards with Buy/Owned state) and Custom Rewards (create/redeem/delete).
+  - `CreateRewardDialog` — AlertDialog with title and cost inputs for user-generated rewards.
+  - Snackbar notifications for purchase success and error feedback.
+  - FAB for creating new custom rewards.
+  - Emoji-based item icons and modifier labels (e.g., "+10% XP", "Decor").
 - Architecture Design Document (`ADD.md`) — full project specification.
 - Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, git workflow.
 

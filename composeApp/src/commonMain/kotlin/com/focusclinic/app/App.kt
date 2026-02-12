@@ -25,6 +25,7 @@ import com.focusclinic.app.presentation.screens.clinic.ClinicScreen
 import com.focusclinic.app.presentation.screens.focus.FocusScreen
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopScreen
+import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import com.focusclinic.app.presentation.screens.stats.StatsScreen
 import com.focusclinic.app.presentation.theme.FocusClinicTheme
 import org.koin.compose.KoinApplication
@@ -76,7 +77,10 @@ fun App(
                                 FocusScreen(viewModel = viewModel)
                             }
                             Screen.Clinic -> ClinicScreen()
-                            Screen.Shop -> ShopScreen()
+                            Screen.Shop -> {
+                                val shopViewModel = koinInject<ShopViewModel>()
+                                ShopScreen(viewModel = shopViewModel)
+                            }
                             Screen.Stats -> StatsScreen()
                         }
                     }

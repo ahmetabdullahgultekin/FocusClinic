@@ -29,6 +29,27 @@ object Strings {
     const val FOCUS_CONTINUE = "Continue"
     const val FOCUS_BALANCE = "Balance"
 
+    // Shop Screen
+    const val SHOP_TAB_VIRTUAL = "Clinic Shop"
+    const val SHOP_TAB_REWARDS = "My Rewards"
+    const val SHOP_OWNED = "Owned"
+    const val SHOP_BUY = "Buy"
+    const val SHOP_REDEEM = "Redeem"
+    const val SHOP_CREATE_REWARD = "Create Reward"
+    const val SHOP_REWARD_TITLE = "Reward title"
+    const val SHOP_REWARD_COST = "Cost (coins)"
+    const val SHOP_SAVE = "Save"
+    const val SHOP_CANCEL = "Cancel"
+    const val SHOP_NO_REWARDS = "No rewards yet. Create one!"
+    const val SHOP_XP_BONUS = "XP"
+    const val SHOP_COIN_BONUS = "Coin"
+    const val SHOP_DECORATION = "Decor"
+    const val SHOP_PURCHASED = "Purchased!"
+    const val SHOP_REDEEMED = "Redeemed!"
+    const val SHOP_DELETE_CONFIRM = "Delete this reward?"
+    const val SHOP_YES = "Yes"
+    const val SHOP_NO = "No"
+
     // Content Descriptions
     const val CD_TIMER = "Session timer"
     const val CD_PATIENT = "Patient status"

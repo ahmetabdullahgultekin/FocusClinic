@@ -1,6 +1,7 @@
 package com.focusclinic.app.di
 
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
+import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -16,6 +17,19 @@ val presentationModule = module {
             completeFocusSession = get(),
             interruptFocusSession = get(),
             getUserStats = get(),
+            scope = get(),
+        )
+    }
+
+    factory {
+        ShopViewModel(
+            purchaseShopItem = get(),
+            purchaseCustomReward = get(),
+            saveCustomReward = get(),
+            deactivateCustomReward = get(),
+            inventoryRepository = get(),
+            customRewardRepository = get(),
+            transactionRepository = get(),
             scope = get(),
         )
     }
