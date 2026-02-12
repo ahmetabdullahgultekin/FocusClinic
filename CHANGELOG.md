@@ -7,10 +7,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ## [Unreleased]
 
 ### Added
-- Architecture Design Document (`ADD.md`) — full project specification with tech stack, data model, business rules, and implementation plan.
-- Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, documentation and git workflow.
-- Project changelog (`CHANGELOG.md`).
-- Project readme (`README.md`).
+- **Gradle multi-module KMP project** — `:core:domain`, `:core:data`, `:composeApp` with compile-time dependency enforcement.
+- **Tech stack configured** — Kotlin 2.1.20, Compose Multiplatform 1.10.0, SQLDelight 2.2.1, Koin 4.1.1, Decompose 3.4.0.
+- **Domain Layer (`:core:domain`):**
+  - Entities: `FocusSession`, `UserProfile`, `ShopItem`, `InventoryItem`, `CustomReward`, `Transaction`, `ClinicAttributes`.
+  - Value Objects: `Coin`, `ExperiencePoints`, `FocusDuration`, `Multiplier` (self-validating).
+  - Sealed types: `SessionStatus`, `ModifierType`, `TransactionType`, `DomainError`, `DomainResult`.
+  - Business rules: `RewardCalculator`, `MultiplierCalculator`, `FocusRules`, `ProgressionRules`, `PlayerLevel`.
+  - Repository ports: `FocusSessionRepository`, `UserProfileRepository`, `InventoryRepository`, `CustomRewardRepository`, `TransactionRepository`.
+  - Use cases: `StartFocusSession`, `CompleteFocusSession`, `InterruptFocusSession`, `PurchaseShopItem`, `PurchaseCustomReward`, `GetUserStats`.
+- **Data Layer (`:core:data`):**
+  - SQLDelight schema: 5 tables (`user_profile`, `focus_sessions`, `inventory`, `custom_rewards`, `transactions`).
+  - Repository implementations: `SqlDelightFocusSessionRepository`, `SqlDelightUserProfileRepository`, `SqlDelightInventoryRepository`, `SqlDelightCustomRewardRepository`, `SqlDelightTransactionRepository`.
+  - Mappers: extension functions for all DTO-to-domain conversions.
+  - `expect/actual` DriverFactory for Android (AndroidSqliteDriver) and iOS (NativeSqliteDriver).
+- **Presentation Layer (`:composeApp`):**
+  - Decompose navigation with `RootComponent` and `ChildStack` (Focus, Clinic, Shop, Stats screens).
+  - Bottom navigation bar with Material Icons.
+  - Koin DI modules (`dataModule`, `domainModule`) wiring all layers.
+  - Material 3 theme (Teal + Soft Blue palette).
+  - Android entry point (`MainActivity`) and iOS entry point (`MainViewController`).
+  - Placeholder screens for all 4 tabs.
+- Architecture Design Document (`ADD.md`) — full project specification.
+- Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, git workflow.
 
 ### Decisions Made
 - **MVI** over MVVM — unidirectional data flow fits session state machine.
@@ -20,3 +39,4 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - **Reduced partial rewards** on interruption — `(actual/planned) * base * 0.5`.
 - **3.0x multiplier cap** — additive stacking, capped to prevent inflation.
 - **5-minute minimum** for reward eligibility.
+- **JDK 23** for Gradle builds (JDK 25 default incompatible with Gradle 8.11.1).

@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS focus_sessions (
+    id TEXT NOT NULL PRIMARY KEY,
+    start_time INTEGER NOT NULL,
+    end_time INTEGER,
+    planned_duration_minutes INTEGER NOT NULL,
+    actual_focus_minutes INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL,
+    earned_xp INTEGER NOT NULL DEFAULT 0,
+    earned_coins INTEGER NOT NULL DEFAULT 0
+);
+
+getById:
+SELECT * FROM focus_sessions WHERE id = ?;
+
+getActiveSession:
+SELECT * FROM focus_sessions WHERE status = 'FOCUSING' LIMIT 1;
+
+getAllByStartTimeDesc:
+SELECT * FROM focus_sessions ORDER BY start_time DESC;
+
+upsert:
+INSERT OR REPLACE INTO focus_sessions(id, start_time, end_time, planned_duration_minutes, actual_focus_minutes, status, earned_xp, earned_coins)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);

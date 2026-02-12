@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS inventory (
+    item_id TEXT NOT NULL PRIMARY KEY,
+    item_name TEXT NOT NULL,
+    item_type TEXT NOT NULL,
+    modifier_type TEXT,
+    modifier_value REAL NOT NULL DEFAULT 0.0,
+    purchased_at INTEGER NOT NULL
+);
+
+getAll:
+SELECT * FROM inventory;
+
+getById:
+SELECT * FROM inventory WHERE item_id = ?;
+
+existsById:
+SELECT COUNT(*) FROM inventory WHERE item_id = ?;
+
+insert:
+INSERT INTO inventory(item_id, item_name, item_type, modifier_type, modifier_value, purchased_at)
+VALUES (?, ?, ?, ?, ?, ?);

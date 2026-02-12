@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS transactions (
+    id TEXT NOT NULL PRIMARY KEY,
+    type TEXT NOT NULL,
+    amount INTEGER NOT NULL,
+    reference_id TEXT NOT NULL,
+    description TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+);
+
+getBalance:
+SELECT COALESCE(SUM(amount), 0) AS current_coins FROM transactions;
+
+getAllByDateDesc:
+SELECT * FROM transactions ORDER BY created_at DESC;
+
+insert:
+INSERT INTO transactions(id, type, amount, reference_id, description, created_at)
+VALUES (?, ?, ?, ?, ?, ?);
