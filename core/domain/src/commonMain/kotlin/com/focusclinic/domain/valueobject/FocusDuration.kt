@@ -2,7 +2,7 @@ package com.focusclinic.domain.valueobject
 
 import com.focusclinic.domain.rule.FocusRules
 
-@JvmInline
+@kotlin.jvm.JvmInline
 value class FocusDuration(val minutes: Int) {
 
     init {

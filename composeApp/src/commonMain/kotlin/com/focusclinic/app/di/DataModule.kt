@@ -13,13 +13,13 @@ import com.focusclinic.domain.repository.FocusSessionRepository
 import com.focusclinic.domain.repository.InventoryRepository
 import com.focusclinic.domain.repository.TransactionRepository
 import com.focusclinic.domain.repository.UserProfileRepository
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
+@OptIn(ExperimentalUuidApi::class, kotlin.time.ExperimentalTime::class)
 val dataModule = module {
 
     single<FocusClinicDatabase> { createDatabase(get()) }

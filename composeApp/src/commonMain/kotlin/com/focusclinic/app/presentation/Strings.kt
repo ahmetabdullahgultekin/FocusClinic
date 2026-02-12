@@ -65,6 +65,21 @@ object Strings {
     const val CLINIC_NO_EQUIPMENT = "No equipment yet"
     const val CLINIC_NO_DECORATIONS = "No decorations yet"
 
+    // Stats Screen
+    const val STATS_TITLE = "Statistics"
+    const val STATS_TOTAL_SESSIONS = "Sessions"
+    const val STATS_COMPLETED = "Completed"
+    const val STATS_TOTAL_FOCUS = "Focus Time"
+    const val STATS_TOTAL_XP = "Total XP"
+    const val STATS_TOTAL_COINS = "Total Coins"
+    const val STATS_SESSION_HISTORY = "Session History"
+    const val STATS_NO_SESSIONS = "No sessions yet. Start focusing!"
+    const val STATS_HOURS_SUFFIX = "h"
+    const val STATS_MINUTES_SUFFIX = "m"
+    const val STATS_STATUS_COMPLETED = "Completed"
+    const val STATS_STATUS_INTERRUPTED = "Interrupted"
+    const val STATS_STATUS_CANCELLED = "Cancelled"
+
     // Content Descriptions
     const val CD_TIMER = "Session timer"
     const val CD_PATIENT = "Patient status"

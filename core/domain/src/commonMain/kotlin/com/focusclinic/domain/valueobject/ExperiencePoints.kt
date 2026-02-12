@@ -1,6 +1,6 @@
 package com.focusclinic.domain.valueobject
 
-@JvmInline
+@kotlin.jvm.JvmInline
 value class ExperiencePoints(val value: Long) {
 
     init {

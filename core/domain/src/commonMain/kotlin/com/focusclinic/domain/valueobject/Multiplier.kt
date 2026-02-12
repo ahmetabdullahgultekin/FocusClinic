@@ -2,7 +2,7 @@ package com.focusclinic.domain.valueobject
 
 import com.focusclinic.domain.rule.ProgressionRules
 
-@JvmInline
+@kotlin.jvm.JvmInline
 value class Multiplier(val value: Double) {
 
     init {

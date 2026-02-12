@@ -3,6 +3,7 @@ package com.focusclinic.app.di
 import com.focusclinic.app.presentation.screens.clinic.ClinicViewModel
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
+import com.focusclinic.app.presentation.screens.stats.StatsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -39,6 +40,14 @@ val presentationModule = module {
             inventoryRepository = get(),
             customRewardRepository = get(),
             transactionRepository = get(),
+            scope = get(),
+        )
+    }
+
+    factory {
+        StatsViewModel(
+            getUserStats = get(),
+            sessionRepository = get(),
             scope = get(),
         )
     }

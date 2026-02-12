@@ -1,6 +1,6 @@
 package com.focusclinic.domain.valueobject
 
-@JvmInline
+@kotlin.jvm.JvmInline
 value class Coin(val amount: Long) {
 
     init {

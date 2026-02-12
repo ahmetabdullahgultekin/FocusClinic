@@ -55,8 +55,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - Player level card with animated XP progress bar, level number, title, and level-specific emoji.
   - Active multipliers card showing XP and Coin multiplier values.
   - Inventory sections for Equipment and Decorations with item lists.
+- **Stats Feature (Step 8):**
+  - `StatsViewModel` — Observes user stats and session history via reactive Flows.
+  - `StatsState` — Computed summary properties (totalSessions, completedSessions, totalFocusMinutes, totalEarnedXp/Coins).
+  - Summary row with 3 cards: total sessions, completed sessions, focus time.
+  - Player summary card showing total XP, total Coins, and current level with emoji.
+  - Session history list with status emoji, duration, earned XP/Coins per session.
+  - Empty state message when no sessions exist.
+  - Helper functions: `formatDuration()`, `statusEmoji()`, `statusLabel()`, `levelEmoji()`.
 - Architecture Design Document (`ADD.md`) — full project specification.
 - Engineering standards (`CLAUDE.md`) — SOLID, design patterns, DRY/YAGNI/KISS rules, naming conventions, git workflow.
+
+### Fixed
+- **`@JvmInline` KMP compatibility** — Used fully qualified `@kotlin.jvm.JvmInline` annotation on value objects so they compile on both JVM (Android) and Native (iOS) targets.
+- **`Clock.System` migration** — Switched from `kotlinx.datetime.Clock` to `kotlin.time.Clock` due to kotlinx-datetime 0.7.x API change (transitive dependency bump).
 
 ### Decisions Made
 - **MVI** over MVVM — unidirectional data flow fits session state machine.
