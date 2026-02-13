@@ -6,6 +6,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Project Review — Roadmap Status (2026-02-13)
+
+**Overall completion: ~85% of ADD.md spec.**
+
+All 9 implementation steps addressed. Core application logic (domain, data, 4 UI screens, 90+ unit tests) is complete. Remaining gaps:
+
+#### Outstanding Items (by priority)
+
+**P1 — Platform Reliability:**
+1. Android ForegroundService + WakeLock for timer survival when backgrounded (manifest permissions declared, no implementation)
+2. Timer completion notification — `expect/actual NotificationManager` for both platforms
+3. iOS background task registration via `BGTaskScheduler`
+
+**P2 — Spec Compliance:**
+4. `UpgradeClinicUseCase` — listed in ADD.md Section 3A but not implemented; decide if shop purchases cover this or implement separately
+5. Data layer integration tests — `:core:data` `commonTest` with SQLDelight in-memory driver
+6. Compose UI tests — `:composeApp` `commonTest` covering critical flows
+
+**P3 — Documentation:**
+7. README.md build instructions (JDK, Android SDK, run commands)
+
+#### Deviations from Spec
+- Dark mode implemented despite ADD.md Section 7 marking it "Not in V1 scope" — positive deviation, ADD.md updated.
+
 ### Added
 - **Gradle multi-module KMP project** — `:core:domain`, `:core:data`, `:composeApp` with compile-time dependency enforcement.
 - **Tech stack configured** — Kotlin 2.1.20, Compose Multiplatform 1.10.0, SQLDelight 2.2.1, Koin 4.1.1, Decompose 3.4.0.

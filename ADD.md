@@ -286,7 +286,7 @@ FocusClinic/
 ## 7. UI/UX Guidelines
 
 * **Theme:** Medical/Clean but Gamified. Primary palette: White, Teal (#009688), Soft Blue (#42A5F5).
-* **Dark Mode:** Not in V1 scope. Design with Material 3 theming so it can be added later.
+* **Dark Mode:** Implemented via `isSystemInDarkTheme()` with complementary dark palette (Teal 200/Blue 200 tones).
 * **Placeholder Assets:**
     * `ic_tooth_coin` — Currency icon
     * `ic_patient_happy` — Session completed
