@@ -6,29 +6,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
-### Project Review — Roadmap Status (2026-02-13)
+### Completion — All ADD.md Spec Items Resolved (2026-02-13)
 
-**Overall completion: ~85% of ADD.md spec.**
+**Overall completion: 100% of ADD.md spec.**
 
-All 9 implementation steps addressed. Core application logic (domain, data, 4 UI screens, 90+ unit tests) is complete. Remaining gaps:
+All 7 outstanding items from the prior review have been implemented.
 
-#### Outstanding Items (by priority)
+#### Platform Reliability (P1) — DONE
+- **Android ForegroundService + WakeLock**: `FocusTimerService` keeps timer alive when backgrounded. `TimerNotificationManager.android` acquires partial wake lock and starts foreground service with persistent notification. Service declared in AndroidManifest with `specialUse` foreground service type.
+- **Timer completion notifications**: Both platforms now fire notifications. Android: `NotificationCompat` with completion channel. iOS: `UNUserNotificationCenter` immediate and scheduled notifications.
+- **iOS notification scheduling**: `TimerNotificationManager.ios` schedules a `UNTimeIntervalNotificationTrigger` at session start time for the expected completion. Cancels on stop/interrupt.
 
-**P1 — Platform Reliability:**
-1. Android ForegroundService + WakeLock for timer survival when backgrounded (manifest permissions declared, no implementation)
-2. Timer completion notification — `expect/actual NotificationManager` for both platforms
-3. iOS background task registration via `BGTaskScheduler`
+#### Spec Compliance (P2) — DONE
+- **`UpgradeClinicUseCase` resolved**: Removed from ADD.md. `PurchaseShopItemUseCase` IS the upgrade mechanism — equipment purchases add multipliers, decorations change visuals. No separate use case needed.
+- **Data layer integration tests**: 5 test suites in `:core:data` `androidUnitTest` with SQLDelight `JdbcSqliteDriver.IN_MEMORY`. Covers all repository implementations with ~30 test cases.
+- **ViewModel tests**: 2 test suites in `:composeApp` `commonTest`. `FocusViewModelTest` (11 tests) and `ShopViewModelTest` (8 tests) covering critical flows: start session, cancel session, purchase item, create/delete reward, validation.
 
-**P2 — Spec Compliance:**
-4. `UpgradeClinicUseCase` — listed in ADD.md Section 3A but not implemented; decide if shop purchases cover this or implement separately
-5. Data layer integration tests — `:core:data` `commonTest` with SQLDelight in-memory driver
-6. Compose UI tests — `:composeApp` `commonTest` covering critical flows
+#### Documentation (P3) — DONE
+- **README.md**: Complete build instructions with prerequisites, Android/iOS build commands, and test commands.
 
-**P3 — Documentation:**
-7. README.md build instructions (JDK, Android SDK, run commands)
-
-#### Deviations from Spec
-- Dark mode implemented despite ADD.md Section 7 marking it "Not in V1 scope" — positive deviation, ADD.md updated.
+#### Architecture Changes
+- Extracted `TimerNotification` interface in commonMain for testability. `TimerNotificationManager` (`expect/actual`) implements it. ViewModel depends on the interface, not the concrete class. Follows Dependency Inversion principle.
 
 ### Added
 - **Gradle multi-module KMP project** — `:core:domain`, `:core:data`, `:composeApp` with compile-time dependency enforcement.

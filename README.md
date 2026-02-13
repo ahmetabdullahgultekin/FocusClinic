@@ -8,18 +8,18 @@ A gamified productivity app for students preparing for difficult exams. Combines
 
 | Concern | Choice |
 |:---|:---|
-| Language | Kotlin (100% commonMain) |
-| UI | Compose Multiplatform (Material 3) |
+| Language | Kotlin 2.1.20 (100% commonMain) |
+| UI | Compose Multiplatform 1.10.0 (Material 3) |
 | Architecture | MVI + Clean Architecture |
-| DI | Koin |
-| Navigation | Decompose |
-| Database | SQLDelight |
-| Async | Kotlin Coroutines & Flow |
+| DI | Koin 4.1.1 |
+| Navigation | Decompose 3.4.0 |
+| Database | SQLDelight 2.2.1 |
+| Async | Kotlin Coroutines 1.10.2 & Flow |
 
 ## Platform
 
-- Android
-- iOS
+- Android (minSdk 24, targetSdk 35)
+- iOS (x64, arm64, simulator arm64)
 
 ## Project Structure
 
@@ -29,8 +29,52 @@ FocusClinic/
 │   ├── domain/       # Pure Kotlin — entities, value objects, use cases, ports
 │   └── data/         # SQLDelight, repository implementations, mappers
 ├── composeApp/       # UI, ViewModels, DI, platform adapters (expect/actual)
+│   ├── commonMain/   # Shared UI and business logic
+│   ├── androidMain/  # Android platform: ForegroundService, WakeLock, notifications
+│   └── iosMain/      # iOS platform: UNUserNotificationCenter
 ├── androidApp/       # Android entry point
 └── iosApp/           # iOS entry point
+```
+
+## Prerequisites
+
+- **JDK 17+** (JDK 23 recommended; JDK 25 is incompatible with Gradle 8.11.1)
+- **Android SDK** with compileSdk 35
+- **Xcode 15+** (for iOS builds)
+
+## Build & Run
+
+### Android
+
+```bash
+# Build debug APK
+./gradlew :composeApp:assembleDebug
+
+# Install and run on connected device/emulator
+./gradlew :composeApp:installDebug
+```
+
+### iOS
+
+Open the `iosApp/iosApp.xcodeproj` in Xcode and run on a simulator or device.
+
+Alternatively, build the shared framework:
+
+```bash
+./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64
+```
+
+### Tests
+
+```bash
+# Domain unit tests (value objects, rules, use cases)
+./gradlew :core:domain:allTests
+
+# Data layer integration tests (SQLDelight repositories)
+./gradlew :core:data:testDebugUnitTest
+
+# Presentation layer ViewModel tests
+./gradlew :composeApp:allTests
 ```
 
 ## Documentation
@@ -38,7 +82,3 @@ FocusClinic/
 - [`ADD.md`](ADD.md) — Architecture Design Document (full specification)
 - [`CLAUDE.md`](CLAUDE.md) — Engineering standards and project rules
 - [`CHANGELOG.md`](CHANGELOG.md) — Change log
-
-## Build & Run
-
-> Setup instructions will be added once the project is initialized.

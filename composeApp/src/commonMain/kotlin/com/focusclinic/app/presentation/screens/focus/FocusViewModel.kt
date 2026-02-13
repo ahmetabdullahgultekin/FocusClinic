@@ -1,5 +1,6 @@
 package com.focusclinic.app.presentation.screens.focus
 
+import com.focusclinic.app.platform.TimerNotification
 import com.focusclinic.domain.model.DomainResult
 import com.focusclinic.domain.model.FocusSession
 import com.focusclinic.domain.model.SessionStatus
@@ -26,6 +27,7 @@ class FocusViewModel(
     private val completeFocusSession: CompleteFocusSessionUseCase,
     private val interruptFocusSession: InterruptFocusSessionUseCase,
     private val getUserStats: GetUserStatsUseCase,
+    private val timerNotification: TimerNotification,
     private val scope: CoroutineScope,
 ) {
     private val _state = MutableStateFlow(FocusState())
@@ -87,6 +89,7 @@ class FocusViewModel(
                             totalSeconds = totalSeconds,
                         )
                     }
+                    timerNotification.onSessionStarted(duration.minutes)
                     startTimer()
                 }
                 is DomainResult.Failure -> {
@@ -119,6 +122,7 @@ class FocusViewModel(
         if (_state.value.phase != FocusPhase.Focusing) return
         timerJob?.cancel()
         graceJob?.cancel()
+        timerNotification.onSessionStopped()
 
         val sessionId = activeSessionId ?: return
         val elapsedMinutes = elapsedMinutes()
@@ -157,6 +161,15 @@ class FocusViewModel(
 
     private fun showResult(session: FocusSession, wasInterrupted: Boolean) {
         val phase = if (wasInterrupted) FocusPhase.Interrupted else FocusPhase.Completed
+
+        if (wasInterrupted) {
+            timerNotification.onSessionStopped()
+        } else {
+            timerNotification.onSessionCompleted(
+                earnedXp = session.earnedXp.value,
+                earnedCoins = session.earnedCoins.amount,
+            )
+        }
 
         _state.update {
             it.copy(

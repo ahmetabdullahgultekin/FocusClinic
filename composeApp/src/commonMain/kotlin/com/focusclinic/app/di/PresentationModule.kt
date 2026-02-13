@@ -19,6 +19,7 @@ val presentationModule = module {
             completeFocusSession = get(),
             interruptFocusSession = get(),
             getUserStats = get(),
+            timerNotification = get(),
             scope = get(),
         )
     }

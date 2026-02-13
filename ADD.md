@@ -49,9 +49,10 @@ No dependencies on Android, iOS, SQLDelight, or any framework.
     * `StartFocusSessionUseCase`
     * `CompleteFocusSessionUseCase` — calculates rewards using formulas and rules from Section 4.
     * `InterruptFocusSessionUseCase` — handles partial reward calculation.
-    * `PurchaseShopItemUseCase` — deducts coins, adds item to inventory, records transaction.
+    * `PurchaseShopItemUseCase` — deducts coins, adds item to inventory, records transaction. Also serves as the clinic upgrade mechanism (equipment purchases add multipliers, decorations change visuals).
     * `PurchaseCustomRewardUseCase` — deducts coins for real-life rewards, records transaction.
-    * `UpgradeClinicUseCase`
+    * `SaveCustomRewardUseCase` — creates user-generated real-life rewards.
+    * `DeactivateCustomRewardUseCase` — soft-deletes a custom reward.
     * `GetUserStatsUseCase` — aggregates profile, level, multipliers.
 * **Domain Rules:** All reward formulas, multiplier caps, and minimum duration rules live here as constants/functions. No business logic in the data or presentation layer.
 
@@ -70,9 +71,8 @@ No dependencies on Android, iOS, SQLDelight, or any framework.
     * `XxxIntent` — sealed interface of user actions.
     * `XxxViewModel` — reduces intents into state.
 * **Platform Adapters (`expect/actual`):**
-    * `LifecycleObserver` — detect app backgrounding (session interruption).
-    * `WakeLockManager` — prevent screen sleep during focus sessions.
-    * `NotificationManager` — timer completion and break reminders.
+    * `AppLifecycleObserver` — detect app backgrounding (session interruption). Android: `LifecycleEventObserver`. iOS: `NSNotificationCenter`.
+    * `TimerNotificationManager` — keeps timer alive and sends notifications. Android: `ForegroundService` + `WakeLock` + notification channels. iOS: `UNUserNotificationCenter` scheduled/immediate notifications.
 * **Navigation:** Decompose component tree with Compose integration.
 * **DI:** Koin modules wiring all layers together.
 
