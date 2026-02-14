@@ -1,6 +1,7 @@
 package com.focusclinic.app.presentation.screens.goals
 
 import com.focusclinic.domain.model.DomainResult
+import com.focusclinic.domain.model.GoalCompletion
 import com.focusclinic.domain.repository.WillpowerGoalRepository
 import com.focusclinic.domain.usecase.CompleteWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.CreateWillpowerGoalUseCase
@@ -20,13 +21,22 @@ class GoalsViewModel(
     private val deactivateWillpowerGoal: DeactivateWillpowerGoalUseCase,
     private val goalRepository: WillpowerGoalRepository,
     private val scope: CoroutineScope,
+    private val clock: () -> Long,
 ) {
     private val _state = MutableStateFlow(GoalsState())
     val state: StateFlow<GoalsState> = _state.asStateFlow()
 
     init {
+        initCalendar()
         observeGoals()
         observeCompletions()
+    }
+
+    private fun initCalendar() {
+        val now = clock()
+        val year = epochMillisToYear(now)
+        val month = epochMillisToMonth(now)
+        _state.update { it.copy(calendarYear = year, calendarMonth = month) }
     }
 
     fun onIntent(intent: GoalsIntent) {
@@ -44,6 +54,8 @@ class GoalsViewModel(
             GoalsIntent.DismissDialog -> _state.update {
                 it.copy(showCreateDialog = false, editingGoal = null)
             }
+            GoalsIntent.PreviousMonth -> navigateMonth(-1)
+            GoalsIntent.NextMonth -> navigateMonth(1)
             GoalsIntent.DismissError -> _state.update { it.copy(errorMessage = null) }
             GoalsIntent.DismissSuccess -> _state.update { it.copy(successMessage = null) }
         }
@@ -60,8 +72,25 @@ class GoalsViewModel(
     private fun observeCompletions() {
         scope.launch {
             goalRepository.observeAllCompletions().collect { completions ->
-                _state.update { it.copy(recentCompletions = completions) }
+                val counts = computeCalendarCounts(
+                    completions, _state.value.calendarYear, _state.value.calendarMonth,
+                )
+                _state.update {
+                    it.copy(recentCompletions = completions, calendarCompletionCounts = counts)
+                }
             }
+        }
+    }
+
+    private fun navigateMonth(delta: Int) {
+        val current = _state.value
+        var newMonth = current.calendarMonth + delta
+        var newYear = current.calendarYear
+        if (newMonth < 1) { newMonth = 12; newYear-- }
+        if (newMonth > 12) { newMonth = 1; newYear++ }
+        val counts = computeCalendarCounts(current.recentCompletions, newYear, newMonth)
+        _state.update {
+            it.copy(calendarYear = newYear, calendarMonth = newMonth, calendarCompletionCounts = counts)
         }
     }
 
@@ -126,3 +155,77 @@ class GoalsViewModel(
         }
     }
 }
+
+private fun computeCalendarCounts(
+    completions: List<GoalCompletion>,
+    year: Int,
+    month: Int,
+): Map<Int, Int> {
+    val counts = mutableMapOf<Int, Int>()
+    for (completion in completions) {
+        val cYear = epochMillisToYear(completion.completedAt)
+        val cMonth = epochMillisToMonth(completion.completedAt)
+        if (cYear == year && cMonth == month) {
+            val day = epochMillisToDay(completion.completedAt)
+            counts[day] = (counts[day] ?: 0) + 1
+        }
+    }
+    return counts
+}
+
+private const val MILLIS_PER_DAY = 86_400_000L
+
+private fun epochMillisToYear(millis: Long): Int {
+    var days = (millis / MILLIS_PER_DAY).toInt()
+    var year = 1970
+    while (true) {
+        val daysInYear = if (isLeapYear(year)) 366 else 365
+        if (days < daysInYear) break
+        days -= daysInYear
+        year++
+    }
+    return year
+}
+
+private fun epochMillisToMonth(millis: Long): Int {
+    var days = (millis / MILLIS_PER_DAY).toInt()
+    var year = 1970
+    while (true) {
+        val daysInYear = if (isLeapYear(year)) 366 else 365
+        if (days < daysInYear) break
+        days -= daysInYear
+        year++
+    }
+    val monthDays = monthLengths(year)
+    var month = 1
+    for (ml in monthDays) {
+        if (days < ml) break
+        days -= ml
+        month++
+    }
+    return month
+}
+
+private fun epochMillisToDay(millis: Long): Int {
+    var days = (millis / MILLIS_PER_DAY).toInt()
+    var year = 1970
+    while (true) {
+        val daysInYear = if (isLeapYear(year)) 366 else 365
+        if (days < daysInYear) break
+        days -= daysInYear
+        year++
+    }
+    val monthDays = monthLengths(year)
+    for (ml in monthDays) {
+        if (days < ml) break
+        days -= ml
+    }
+    return days + 1
+}
+
+private fun isLeapYear(year: Int): Boolean =
+    year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)
+
+private fun monthLengths(year: Int): IntArray = intArrayOf(
+    31, if (isLeapYear(year)) 29 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+)

@@ -33,7 +33,7 @@ import com.focusclinic.app.presentation.screens.shop.ShopScreen
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import com.focusclinic.app.presentation.screens.stats.StatsScreen
 import com.focusclinic.app.presentation.screens.stats.StatsViewModel
-import com.focusclinic.app.presentation.theme.FocusClinicTheme
+import com.focusclinic.app.presentation.theme.IradeTheme
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 
@@ -46,7 +46,7 @@ fun App(
         koinSetup()
         modules(platformModule(), dataModule, domainModule, presentationModule)
     }) {
-        FocusClinicTheme {
+        IradeTheme {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,

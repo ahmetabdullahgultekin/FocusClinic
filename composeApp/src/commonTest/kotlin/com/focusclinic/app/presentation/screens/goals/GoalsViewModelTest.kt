@@ -62,6 +62,7 @@ class GoalsViewModelTest {
             ),
             goalRepository = goalRepo,
             scope = testScope,
+            clock = { 1_771_200_000_000L }, // Feb 2026
         )
     }
 

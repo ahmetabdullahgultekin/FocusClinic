@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.focusclinic.app.presentation.Strings
+import com.focusclinic.app.presentation.components.CalendarHeatmap
 import com.focusclinic.domain.model.WillpowerGoal
 
 @Composable
@@ -98,6 +99,25 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 16.dp),
             )
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                ),
+            ) {
+                CalendarHeatmap(
+                    year = state.calendarYear,
+                    month = state.calendarMonth,
+                    completionCounts = state.calendarCompletionCounts,
+                    onPreviousMonth = { viewModel.onIntent(GoalsIntent.PreviousMonth) },
+                    onNextMonth = { viewModel.onIntent(GoalsIntent.NextMonth) },
+                    onDayClick = { },
+                    modifier = Modifier.padding(8.dp),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
 
             AnimatedVisibility(
                 visible = state.isLoading,

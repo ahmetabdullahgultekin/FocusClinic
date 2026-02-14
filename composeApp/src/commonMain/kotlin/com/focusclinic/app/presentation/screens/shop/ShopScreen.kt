@@ -170,7 +170,7 @@ private fun BalanceHeader(balance: Long) {
         horizontalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = "\uD83E\uDDB7",
+            text = "\u2728",
             style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -247,7 +247,7 @@ private fun ShopItemCard(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
-                    text = "\uD83E\uDDB7 ${item.cost.amount}",
+                    text = "\u2728 ${item.cost.amount}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.primary,
@@ -347,7 +347,7 @@ private fun RewardCard(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "\uD83E\uDDB7 ${reward.cost.amount}",
+                    text = "\u2728 ${reward.cost.amount}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -445,14 +445,14 @@ private fun CreateRewardDialog(
 }
 
 private fun itemEmoji(item: ShopItem): String = when (item.id) {
-    "ergonomic_chair" -> "\uD83E\uDE91"     // chair
-    "led_lamp" -> "\uD83D\uDCA1"            // light bulb
-    "sterilizer_pro" -> "\uD83E\uDDF4"      // sponge (sterilizer proxy)
-    "digital_xray" -> "\uD83E\uDE7B"        // x-ray
-    "wall_paint_ocean" -> "\uD83C\uDF0A"     // wave
-    "diploma_frame" -> "\uD83C\uDF93"        // graduation cap
-    "potted_plant" -> "\uD83C\uDF3F"         // herb
-    "aquarium" -> "\uD83D\uDC20"             // tropical fish
+    "focus_stone" -> "\uD83D\uDD2E"          // crystal ball
+    "perseverance_shield" -> "\uD83D\uDEE1\uFE0F"  // shield
+    "willpower_fire" -> "\uD83D\uDD25"       // fire
+    "patience_medal" -> "\uD83C\uDFC5"       // medal
+    "peace_garden" -> "\uD83C\uDF3B"         // sunflower
+    "motivation_wall" -> "\uD83C\uDFA8"      // art
+    "inspiration_plant" -> "\uD83C\uDF3F"    // herb
+    "victory_aquarium" -> "\uD83D\uDC20"     // tropical fish
     else -> "\uD83D\uDCE6"                   // package
 }
 

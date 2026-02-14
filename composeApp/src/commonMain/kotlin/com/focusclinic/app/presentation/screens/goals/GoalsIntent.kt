@@ -23,6 +23,8 @@ sealed interface GoalsIntent {
     data class StartEditing(val goal: WillpowerGoal) : GoalsIntent
     data object ShowCreateDialog : GoalsIntent
     data object DismissDialog : GoalsIntent
+    data object PreviousMonth : GoalsIntent
+    data object NextMonth : GoalsIntent
     data object DismissError : GoalsIntent
     data object DismissSuccess : GoalsIntent
 }
