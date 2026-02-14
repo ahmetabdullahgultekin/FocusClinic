@@ -15,6 +15,7 @@ data class FocusState(
     val xpMultiplier: Multiplier = Multiplier.BASE,
     val coinMultiplier: Multiplier = Multiplier.BASE,
     val sessionResult: SessionResult? = null,
+    val showCelebration: Boolean = false,
     val errorMessage: String? = null,
 ) {
     val progress: Float

@@ -1,5 +1,6 @@
 package com.focusclinic.app.presentation
 
+import com.focusclinic.app.platform.HapticFeedback
 import com.focusclinic.app.platform.TimerNotification
 import com.focusclinic.domain.model.CustomReward
 import com.focusclinic.domain.model.FocusSession
@@ -21,6 +22,20 @@ import com.focusclinic.domain.valueobject.ExperiencePoints
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+
+class FakeHapticFeedback : HapticFeedback {
+    var lightCalls = 0
+    var mediumCalls = 0
+    var heavyCalls = 0
+    var successCalls = 0
+    var errorCalls = 0
+
+    override fun light() { lightCalls++ }
+    override fun medium() { mediumCalls++ }
+    override fun heavy() { heavyCalls++ }
+    override fun success() { successCalls++ }
+    override fun error() { errorCalls++ }
+}
 
 class FakeTimerNotification : TimerNotification {
     var startedCalls = mutableListOf<Int>()

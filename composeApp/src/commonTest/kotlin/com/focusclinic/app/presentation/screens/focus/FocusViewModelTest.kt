@@ -1,6 +1,7 @@
 package com.focusclinic.app.presentation.screens.focus
 
 import com.focusclinic.app.presentation.FakeFocusSessionRepository
+import com.focusclinic.app.presentation.FakeHapticFeedback
 import com.focusclinic.app.presentation.FakeInventoryRepository
 import com.focusclinic.app.presentation.FakeTimerNotification
 import com.focusclinic.app.presentation.FakeTransactionRepository
@@ -36,6 +37,7 @@ class FocusViewModelTest {
     private val inventoryRepo = FakeInventoryRepository()
     private val transactionRepo = FakeTransactionRepository()
     private val fakeNotification = FakeTimerNotification()
+    private val fakeHaptic = FakeHapticFeedback()
 
     private var idCounter = 0
     private val idGenerator: () -> String = { "test-id-${idCounter++}" }
@@ -62,6 +64,7 @@ class FocusViewModelTest {
             interruptFocusSession = interruptSession,
             getUserStats = getUserStats,
             timerNotification = fakeNotification,
+            hapticFeedback = fakeHaptic,
             scope = testScope,
         )
     }

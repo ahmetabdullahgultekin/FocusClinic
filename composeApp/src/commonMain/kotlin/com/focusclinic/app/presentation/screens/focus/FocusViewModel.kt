@@ -1,5 +1,6 @@
 package com.focusclinic.app.presentation.screens.focus
 
+import com.focusclinic.app.platform.HapticFeedback
 import com.focusclinic.app.platform.TimerNotification
 import com.focusclinic.domain.model.DomainResult
 import com.focusclinic.domain.model.FocusSession
@@ -28,6 +29,7 @@ class FocusViewModel(
     private val interruptFocusSession: InterruptFocusSessionUseCase,
     private val getUserStats: GetUserStatsUseCase,
     private val timerNotification: TimerNotification,
+    private val hapticFeedback: HapticFeedback,
     private val scope: CoroutineScope,
 ) {
     private val _state = MutableStateFlow(FocusState())
@@ -47,6 +49,7 @@ class FocusViewModel(
             FocusIntent.StartSession -> startSession()
             FocusIntent.CancelSession -> cancelSession()
             FocusIntent.DismissResult -> dismissResult()
+            FocusIntent.DismissCelebration -> _state.update { it.copy(showCelebration = false) }
             FocusIntent.AppBackgrounded -> onAppBackgrounded()
             FocusIntent.AppResumed -> onAppResumed()
             FocusIntent.DismissError -> _state.update { it.copy(errorMessage = null) }
@@ -81,6 +84,7 @@ class FocusViewModel(
         scope.launch {
             when (val result = startFocusSession(duration)) {
                 is DomainResult.Success -> {
+                    hapticFeedback.medium()
                     activeSessionId = result.data.id
                     _state.update {
                         it.copy(
@@ -164,17 +168,20 @@ class FocusViewModel(
 
         if (wasInterrupted) {
             timerNotification.onSessionStopped()
+            hapticFeedback.error()
         } else {
             timerNotification.onSessionCompleted(
                 earnedXp = session.earnedXp.value,
                 earnedCoins = session.earnedCoins.amount,
             )
+            hapticFeedback.success()
         }
 
         _state.update {
             it.copy(
                 phase = phase,
                 remainingSeconds = 0,
+                showCelebration = !wasInterrupted,
                 sessionResult = SessionResult(
                     earnedXp = session.earnedXp,
                     earnedCoins = session.earnedCoins,

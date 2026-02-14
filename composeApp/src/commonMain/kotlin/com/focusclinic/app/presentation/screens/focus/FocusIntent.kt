@@ -7,6 +7,7 @@ sealed interface FocusIntent {
     data object StartSession : FocusIntent
     data object CancelSession : FocusIntent
     data object DismissResult : FocusIntent
+    data object DismissCelebration : FocusIntent
     data object AppBackgrounded : FocusIntent
     data object AppResumed : FocusIntent
     data object DismissError : FocusIntent

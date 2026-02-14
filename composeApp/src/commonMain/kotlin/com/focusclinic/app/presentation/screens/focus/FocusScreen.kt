@@ -56,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.focusclinic.app.platform.AppLifecycleObserver
 import com.focusclinic.app.presentation.Strings
+import com.focusclinic.app.presentation.components.CelebrationOverlay
 import com.focusclinic.domain.valueobject.FocusDuration
 
 @Composable
@@ -100,6 +101,13 @@ fun FocusScreen(viewModel: FocusViewModel) {
                     )
                 }
             }
+
+            CelebrationOverlay(
+                visible = state.showCelebration,
+                message = Strings.FOCUS_COMPLETED_TITLE,
+                emoji = "\uD83C\uDF1F",
+                onDismissed = { viewModel.onIntent(FocusIntent.DismissCelebration) },
+            )
         }
     }
 }
