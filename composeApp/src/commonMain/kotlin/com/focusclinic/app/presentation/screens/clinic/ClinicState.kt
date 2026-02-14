@@ -7,7 +7,7 @@ import com.focusclinic.domain.valueobject.ExperiencePoints
 import com.focusclinic.domain.valueobject.Multiplier
 
 data class ClinicState(
-    val playerLevel: PlayerLevel = PlayerLevel.INTERN,
+    val playerLevel: PlayerLevel = PlayerLevel.BEGINNER,
     val totalXp: ExperiencePoints = ExperiencePoints.ZERO,
     val xpMultiplier: Multiplier = Multiplier.BASE,
     val coinMultiplier: Multiplier = Multiplier.BASE,

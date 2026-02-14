@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS goal_completions (
+    id TEXT NOT NULL PRIMARY KEY,
+    goal_id TEXT NOT NULL,
+    completed_at INTEGER NOT NULL,
+    earned_coins INTEGER NOT NULL,
+    earned_xp INTEGER NOT NULL,
+    note TEXT NOT NULL DEFAULT ''
+);
+
+getByGoalId:
+SELECT * FROM goal_completions WHERE goal_id = ? ORDER BY completed_at DESC;
+
+getAll:
+SELECT * FROM goal_completions ORDER BY completed_at DESC;
+
+insert:
+INSERT INTO goal_completions(id, goal_id, completed_at, earned_coins, earned_xp, note)
+VALUES (?, ?, ?, ?, ?, ?);

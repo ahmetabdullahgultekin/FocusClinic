@@ -56,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.focusclinic.app.platform.AppLifecycleObserver
 import com.focusclinic.app.presentation.Strings
+import com.focusclinic.app.presentation.components.CelebrationOverlay
 import com.focusclinic.domain.valueobject.FocusDuration
 
 @Composable
@@ -100,6 +101,13 @@ fun FocusScreen(viewModel: FocusViewModel) {
                     )
                 }
             }
+
+            CelebrationOverlay(
+                visible = state.showCelebration,
+                message = Strings.FOCUS_COMPLETED_TITLE,
+                emoji = "\uD83C\uDF1F",
+                onDismissed = { viewModel.onIntent(FocusIntent.DismissCelebration) },
+            )
         }
     }
 }
@@ -119,14 +127,14 @@ private fun IdleContent(
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = Strings.FOCUS_PATIENT_WAITING,
+            text = Strings.FOCUS_READY,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        PatientVisual(
+        FocusVisual(
             phase = FocusPhase.Idle,
             modifier = Modifier.size(120.dp),
         )
@@ -188,14 +196,14 @@ private fun FocusingContent(
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = Strings.FOCUS_PATIENT_TREATING,
+            text = Strings.FOCUS_IN_PROGRESS,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        PatientVisual(
+        FocusVisual(
             phase = FocusPhase.Focusing,
             modifier = Modifier.size(100.dp),
         )
@@ -248,7 +256,7 @@ private fun ResultContent(
             visible = true,
             enter = scaleIn(tween(400)) + fadeIn(),
         ) {
-            PatientVisual(
+            FocusVisual(
                 phase = state.phase,
                 modifier = Modifier.size(120.dp),
             )
@@ -257,7 +265,7 @@ private fun ResultContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = if (isCompleted) Strings.FOCUS_PATIENT_HAPPY else Strings.FOCUS_PATIENT_ANGRY,
+            text = if (isCompleted) Strings.FOCUS_SUCCESS else Strings.FOCUS_FAILED,
             style = MaterialTheme.typography.titleMedium,
             color = if (isCompleted) MaterialTheme.colorScheme.primary
             else MaterialTheme.colorScheme.error,
@@ -341,19 +349,19 @@ private fun TimerRing(
 }
 
 @Composable
-private fun PatientVisual(
+private fun FocusVisual(
     phase: FocusPhase,
     modifier: Modifier = Modifier,
 ) {
     val emoji = when (phase) {
-        FocusPhase.Idle -> "\uD83E\uDD37"        // shrug — waiting
-        FocusPhase.Focusing -> "\uD83E\uDE7A"     // face with bandage — being treated
-        FocusPhase.Completed -> "\uD83D\uDE04"     // grinning face — happy
-        FocusPhase.Interrupted -> "\uD83D\uDE21"   // angry face
+        FocusPhase.Idle -> "\uD83D\uDD25"        // fire — ready
+        FocusPhase.Focusing -> "\u26A1"           // lightning — in progress
+        FocusPhase.Completed -> "\uD83C\uDF1F"    // glowing star — success
+        FocusPhase.Interrupted -> "\uD83D\uDCA8"  // dash — interrupted
     }
 
     Box(
-        modifier = modifier.semantics { contentDescription = Strings.CD_PATIENT },
+        modifier = modifier.semantics { contentDescription = Strings.CD_FOCUS_STATUS },
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -391,7 +399,7 @@ private fun BalanceRow(balance: Long) {
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(
-            text = "\uD83E\uDDB7",  // tooth emoji as coin placeholder
+            text = "\u2728",  // sparkles
             style = MaterialTheme.typography.titleLarge,
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -453,7 +461,7 @@ private fun ResultCard(
                 RewardItem(
                     label = Strings.FOCUS_EARNED_COINS,
                     value = "+$earnedCoins",
-                    icon = "\uD83E\uDDB7",  // tooth
+                    icon = "\u2728",  // sparkles
                 )
             }
         }

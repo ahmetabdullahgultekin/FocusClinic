@@ -15,5 +15,8 @@ sealed interface Screen {
     data object Shop : Screen
 
     @Serializable
+    data object Goals : Screen
+
+    @Serializable
     data object Stats : Screen
 }

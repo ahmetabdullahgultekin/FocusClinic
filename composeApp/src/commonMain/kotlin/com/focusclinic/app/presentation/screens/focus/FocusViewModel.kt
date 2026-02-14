@@ -1,5 +1,7 @@
 package com.focusclinic.app.presentation.screens.focus
 
+import com.focusclinic.app.platform.HapticFeedback
+import com.focusclinic.app.platform.TimerNotification
 import com.focusclinic.domain.model.DomainResult
 import com.focusclinic.domain.model.FocusSession
 import com.focusclinic.domain.model.SessionStatus
@@ -26,6 +28,8 @@ class FocusViewModel(
     private val completeFocusSession: CompleteFocusSessionUseCase,
     private val interruptFocusSession: InterruptFocusSessionUseCase,
     private val getUserStats: GetUserStatsUseCase,
+    private val timerNotification: TimerNotification,
+    private val hapticFeedback: HapticFeedback,
     private val scope: CoroutineScope,
 ) {
     private val _state = MutableStateFlow(FocusState())
@@ -45,6 +49,7 @@ class FocusViewModel(
             FocusIntent.StartSession -> startSession()
             FocusIntent.CancelSession -> cancelSession()
             FocusIntent.DismissResult -> dismissResult()
+            FocusIntent.DismissCelebration -> _state.update { it.copy(showCelebration = false) }
             FocusIntent.AppBackgrounded -> onAppBackgrounded()
             FocusIntent.AppResumed -> onAppResumed()
             FocusIntent.DismissError -> _state.update { it.copy(errorMessage = null) }
@@ -79,6 +84,7 @@ class FocusViewModel(
         scope.launch {
             when (val result = startFocusSession(duration)) {
                 is DomainResult.Success -> {
+                    hapticFeedback.medium()
                     activeSessionId = result.data.id
                     _state.update {
                         it.copy(
@@ -87,6 +93,7 @@ class FocusViewModel(
                             totalSeconds = totalSeconds,
                         )
                     }
+                    timerNotification.onSessionStarted(duration.minutes)
                     startTimer()
                 }
                 is DomainResult.Failure -> {
@@ -119,6 +126,7 @@ class FocusViewModel(
         if (_state.value.phase != FocusPhase.Focusing) return
         timerJob?.cancel()
         graceJob?.cancel()
+        timerNotification.onSessionStopped()
 
         val sessionId = activeSessionId ?: return
         val elapsedMinutes = elapsedMinutes()
@@ -158,10 +166,22 @@ class FocusViewModel(
     private fun showResult(session: FocusSession, wasInterrupted: Boolean) {
         val phase = if (wasInterrupted) FocusPhase.Interrupted else FocusPhase.Completed
 
+        if (wasInterrupted) {
+            timerNotification.onSessionStopped()
+            hapticFeedback.error()
+        } else {
+            timerNotification.onSessionCompleted(
+                earnedXp = session.earnedXp.value,
+                earnedCoins = session.earnedCoins.amount,
+            )
+            hapticFeedback.success()
+        }
+
         _state.update {
             it.copy(
                 phase = phase,
                 remainingSeconds = 0,
+                showCelebration = !wasInterrupted,
                 sessionResult = SessionResult(
                     earnedXp = session.earnedXp,
                     earnedCoins = session.earnedCoins,

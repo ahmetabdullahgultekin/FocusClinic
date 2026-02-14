@@ -45,7 +45,7 @@ fun ClinicScreen(viewModel: ClinicViewModel) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        ClinicRoomVisual(
+        ProfileVisual(
             equipment = state.equipment,
             decorations = state.decorations,
         )
@@ -61,17 +61,17 @@ fun ClinicScreen(viewModel: ClinicViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         InventorySection(
-            title = Strings.CLINIC_EQUIPMENT,
+            title = Strings.PROFILE_TOOLS,
             items = state.equipment,
-            emptyMessage = Strings.CLINIC_NO_EQUIPMENT,
+            emptyMessage = Strings.PROFILE_NO_TOOLS,
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         InventorySection(
-            title = Strings.CLINIC_DECORATIONS,
+            title = Strings.PROFILE_DECORATIONS,
             items = state.decorations,
-            emptyMessage = Strings.CLINIC_NO_DECORATIONS,
+            emptyMessage = Strings.PROFILE_NO_DECORATIONS,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -79,7 +79,7 @@ fun ClinicScreen(viewModel: ClinicViewModel) {
 }
 
 @Composable
-private fun ClinicRoomVisual(
+private fun ProfileVisual(
     equipment: List<InventoryItem>,
     decorations: List<InventoryItem>,
 ) {
@@ -96,7 +96,7 @@ private fun ClinicRoomVisual(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = Strings.CLINIC_TITLE,
+                text = Strings.PROFILE_TITLE,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -106,18 +106,18 @@ private fun ClinicRoomVisual(
 
             if (equipment.isEmpty() && decorations.isEmpty()) {
                 Text(
-                    text = "\uD83C\uDFE5",  // hospital
+                    text = "\uD83D\uDD25",  // fire
                     style = MaterialTheme.typography.displayLarge,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = Strings.CLINIC_EMPTY_ROOM,
+                    text = Strings.PROFILE_EMPTY,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                 )
             } else {
-                ClinicItemsGrid(equipment = equipment, decorations = decorations)
+                ProfileItemsGrid(equipment = equipment, decorations = decorations)
             }
         }
     }
@@ -125,7 +125,7 @@ private fun ClinicRoomVisual(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ClinicItemsGrid(
+private fun ProfileItemsGrid(
     equipment: List<InventoryItem>,
     decorations: List<InventoryItem>,
 ) {
@@ -135,16 +135,16 @@ private fun ClinicItemsGrid(
         modifier = Modifier.fillMaxWidth(),
     ) {
         equipment.forEach { item ->
-            ClinicItemBadge(item = item)
+            ProfileItemBadge(item = item)
         }
         decorations.forEach { item ->
-            ClinicItemBadge(item = item)
+            ProfileItemBadge(item = item)
         }
     }
 }
 
 @Composable
-private fun ClinicItemBadge(item: InventoryItem) {
+private fun ProfileItemBadge(item: InventoryItem) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -191,7 +191,7 @@ private fun PlayerLevelCard(state: ClinicState) {
             ) {
                 Column {
                     Text(
-                        text = "${Strings.CLINIC_LEVEL} ${state.playerLevel.level}",
+                        text = "${Strings.PROFILE_LEVEL} ${state.playerLevel.level}",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -210,7 +210,7 @@ private fun PlayerLevelCard(state: ClinicState) {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = Strings.CLINIC_XP_PROGRESS,
+                text = Strings.PROFILE_XP_PROGRESS,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
@@ -240,13 +240,13 @@ private fun PlayerLevelCard(state: ClinicState) {
                 )
                 if (state.nextLevel != null) {
                     Text(
-                        text = "${state.xpToNextLevel} ${Strings.CLINIC_XP_TO_NEXT}",
+                        text = "${state.xpToNextLevel} ${Strings.PROFILE_XP_TO_NEXT}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 } else {
                     Text(
-                        text = Strings.CLINIC_MAX_LEVEL,
+                        text = Strings.PROFILE_MAX_LEVEL,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
@@ -266,7 +266,7 @@ private fun MultiplierCard(state: ClinicState) {
                 .padding(16.dp),
         ) {
             Text(
-                text = Strings.CLINIC_MULTIPLIERS,
+                text = Strings.PROFILE_MULTIPLIERS,
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
             )
@@ -278,14 +278,14 @@ private fun MultiplierCard(state: ClinicState) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 MultiplierItem(
-                    label = Strings.CLINIC_XP_MULTIPLIER,
+                    label = Strings.PROFILE_XP_MULTIPLIER,
                     value = state.xpMultiplier.value,
                     icon = "\u2B50",
                 )
                 MultiplierItem(
-                    label = Strings.CLINIC_COIN_MULTIPLIER,
+                    label = Strings.PROFILE_COIN_MULTIPLIER,
                     value = state.coinMultiplier.value,
-                    icon = "\uD83E\uDDB7",
+                    icon = "\u2728",
                 )
             }
         }
@@ -375,14 +375,14 @@ private fun formatMultiplier(value: Double): String {
 }
 
 private fun inventoryEmoji(itemId: String): String = when (itemId) {
-    "ergonomic_chair" -> "\uD83E\uDE91"
-    "led_lamp" -> "\uD83D\uDCA1"
-    "sterilizer_pro" -> "\uD83E\uDDF4"
-    "digital_xray" -> "\uD83E\uDE7B"
-    "wall_paint_ocean" -> "\uD83C\uDF0A"
-    "diploma_frame" -> "\uD83C\uDF93"
-    "potted_plant" -> "\uD83C\uDF3F"
-    "aquarium" -> "\uD83D\uDC20"
+    "focus_stone" -> "\uD83D\uDD2E"          // crystal ball
+    "perseverance_shield" -> "\uD83D\uDEE1\uFE0F"  // shield
+    "willpower_fire" -> "\uD83D\uDD25"        // fire
+    "patience_medal" -> "\uD83C\uDFC5"        // medal
+    "peace_garden" -> "\uD83C\uDF3B"          // sunflower
+    "motivation_wall" -> "\uD83C\uDFA8"       // art
+    "inspiration_plant" -> "\uD83C\uDF3F"     // herb
+    "victory_aquarium" -> "\uD83D\uDC20"      // tropical fish
     else -> "\uD83D\uDCE6"
 }
 
@@ -390,7 +390,7 @@ private fun levelEmoji(level: Int): String = when {
     level >= 10 -> "\uD83C\uDFC6"  // trophy
     level >= 7 -> "\uD83C\uDF1F"   // glowing star
     level >= 5 -> "\uD83D\uDC8E"   // gem
-    level >= 3 -> "\uD83E\uDE7A"   // stethoscope
-    level >= 2 -> "\uD83D\uDC69\u200D\u2695\uFE0F"  // doctor
-    else -> "\uD83D\uDC68\u200D\uD83C\uDF93"  // student
+    level >= 3 -> "\uD83D\uDCAA"   // flexed biceps
+    level >= 2 -> "\u26A1"          // lightning
+    else -> "\uD83C\uDF31"          // seedling
 }

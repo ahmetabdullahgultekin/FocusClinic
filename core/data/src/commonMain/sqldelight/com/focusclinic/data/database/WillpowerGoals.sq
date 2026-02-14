@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS willpower_goals (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    coin_reward INTEGER NOT NULL,
+    xp_reward INTEGER NOT NULL,
+    is_active INTEGER NOT NULL DEFAULT 1,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+
+getActiveGoals:
+SELECT * FROM willpower_goals WHERE is_active = 1 ORDER BY created_at DESC;
+
+getById:
+SELECT * FROM willpower_goals WHERE id = ?;
+
+upsert:
+INSERT OR REPLACE INTO willpower_goals(id, title, description, coin_reward, xp_reward, is_active, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+deactivate:
+UPDATE willpower_goals SET is_active = 0 WHERE id = ?;

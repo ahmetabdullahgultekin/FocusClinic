@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">Irade</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_focus">Focus</string>
+    <string name="nav_goals">Goals</string>
+    <string name="nav_profile">Profile</string>
+    <string name="nav_shop">Shop</string>
+    <string name="nav_stats">Stats</string>
+
+    <!-- Focus Screen -->
+    <string name="focus_title">Focus Session</string>
+    <string name="focus_select_duration">Select Duration</string>
+    <string name="focus_start">Start Focus</string>
+    <string name="focus_cancel">Cancel</string>
+    <string name="focus_minutes_suffix">min</string>
+    <string name="focus_time_remaining">Time Remaining</string>
+    <string name="focus_ready">Ready to focus...</string>
+    <string name="focus_in_progress">Stay focused...</string>
+    <string name="focus_success">Focus session complete!</string>
+    <string name="focus_failed">Session interrupted</string>
+    <string name="focus_session_cancelled">Session cancelled</string>
+    <string name="focus_completed_title">Session Complete!</string>
+    <string name="focus_interrupted_title">Session Interrupted</string>
+    <string name="focus_earned_xp">XP Earned</string>
+    <string name="focus_earned_coins">Sparks Earned</string>
+    <string name="focus_continue">Continue</string>
+    <string name="focus_balance">Balance</string>
+
+    <!-- Shop Screen -->
+    <string name="shop_tab_virtual">Power Shop</string>
+    <string name="shop_tab_rewards">My Rewards</string>
+    <string name="shop_owned">Owned</string>
+    <string name="shop_buy">Buy</string>
+    <string name="shop_redeem">Redeem</string>
+    <string name="shop_create_reward">Create Reward</string>
+    <string name="shop_reward_title">Reward title</string>
+    <string name="shop_reward_cost">Cost (sparks)</string>
+    <string name="shop_save">Save</string>
+    <string name="shop_cancel">Cancel</string>
+    <string name="shop_no_rewards">No rewards yet. Create one!</string>
+    <string name="shop_xp_bonus">XP</string>
+    <string name="shop_coin_bonus">Spark</string>
+    <string name="shop_decoration">Decor</string>
+    <string name="shop_purchased">Purchased!</string>
+    <string name="shop_redeemed">Redeemed!</string>
+    <string name="shop_delete_confirm">Delete this reward?</string>
+    <string name="shop_yes">Yes</string>
+    <string name="shop_no">No</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_title">My Profile</string>
+    <string name="profile_level">Level</string>
+    <string name="profile_xp_progress">XP Progress</string>
+    <string name="profile_xp_to_next">XP to next level</string>
+    <string name="profile_max_level">Max Level Reached!</string>
+    <string name="profile_multipliers">Active Multipliers</string>
+    <string name="profile_xp_multiplier">XP Multiplier</string>
+    <string name="profile_coin_multiplier">Spark Multiplier</string>
+    <string name="profile_tools">Tools</string>
+    <string name="profile_decorations">Decorations</string>
+    <string name="profile_empty">Your space is empty. Visit the shop!</string>
+    <string name="profile_no_tools">No tools yet</string>
+    <string name="profile_no_decorations">No decorations yet</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">Statistics</string>
+    <string name="stats_total_sessions">Sessions</string>
+    <string name="stats_completed">Completed</string>
+    <string name="stats_total_focus">Focus Time</string>
+    <string name="stats_total_xp">Total XP</string>
+    <string name="stats_total_coins">Total Sparks</string>
+    <string name="stats_session_history">Session History</string>
+    <string name="stats_no_sessions">No sessions yet. Start focusing!</string>
+    <string name="stats_hours_suffix">h</string>
+    <string name="stats_minutes_suffix">m</string>
+    <string name="stats_status_completed">Completed</string>
+    <string name="stats_status_interrupted">Interrupted</string>
+    <string name="stats_status_cancelled">Cancelled</string>
+
+    <!-- Goals Screen -->
+    <string name="goals_title">Goals</string>
+    <string name="goals_add">Add goal</string>
+    <string name="goals_empty">No goals yet. Create one!</string>
+    <string name="goals_complete">Complete</string>
+    <string name="goals_edit">Edit</string>
+    <string name="goals_delete">Delete</string>
+    <string name="goals_coin_reward">Sparks</string>
+    <string name="goals_xp_reward">XP</string>
+    <string name="goals_create_title">Create Goal</string>
+    <string name="goals_edit_title">Edit Goal</string>
+    <string name="goals_field_title">Goal title</string>
+    <string name="goals_field_description">Description (optional)</string>
+    <string name="goals_field_coins">Spark reward</string>
+    <string name="goals_field_xp">XP reward</string>
+    <string name="goals_save">Save</string>
+    <string name="goals_cancel">Cancel</string>
+    <string name="goals_completed_success">Goal completed!</string>
+
+    <!-- Calendar -->
+    <string name="calendar_previous">Previous month</string>
+    <string name="calendar_next">Next month</string>
+    <string name="calendar_january">January</string>
+    <string name="calendar_february">February</string>
+    <string name="calendar_march">March</string>
+    <string name="calendar_april">April</string>
+    <string name="calendar_may">May</string>
+    <string name="calendar_june">June</string>
+    <string name="calendar_july">July</string>
+    <string name="calendar_august">August</string>
+    <string name="calendar_september">September</string>
+    <string name="calendar_october">October</string>
+    <string name="calendar_november">November</string>
+    <string name="calendar_december">December</string>
+
+    <!-- Weekday Headers -->
+    <string name="weekday_mon">Mon</string>
+    <string name="weekday_tue">Tue</string>
+    <string name="weekday_wed">Wed</string>
+    <string name="weekday_thu">Thu</string>
+    <string name="weekday_fri">Fri</string>
+    <string name="weekday_sat">Sat</string>
+    <string name="weekday_sun">Sun</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_timer">Session timer</string>
+    <string name="cd_focus_status">Focus status</string>
+    <string name="cd_coin_icon">Sparks</string>
+    <string name="cd_xp_icon">Experience points</string>
+
+    <!-- Player Levels -->
+    <string name="level_beginner">Beginner</string>
+    <string name="level_apprentice">Apprentice</string>
+    <string name="level_determined">Determined</string>
+    <string name="level_strong">Strong</string>
+    <string name="level_master">Master</string>
+    <string name="level_legend">Legend</string>
+
+    <!-- Shop Items -->
+    <string name="item_focus_stone">Focus Stone</string>
+    <string name="item_perseverance_shield">Perseverance Shield</string>
+    <string name="item_willpower_fire">Willpower Fire</string>
+    <string name="item_patience_medal">Patience Medal</string>
+    <string name="item_peace_garden">Peace Garden</string>
+    <string name="item_motivation_wall">Motivation Wall</string>
+    <string name="item_inspiration_plant">Inspiration Plant</string>
+    <string name="item_victory_aquarium">Victory Aquarium</string>
+</resources>

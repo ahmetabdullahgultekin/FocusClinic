@@ -178,7 +178,7 @@ private fun PlayerSummaryCard(state: StatsState) {
             VerticalDivider()
 
             StatItem(
-                icon = "\uD83E\uDDB7",
+                icon = "\u2728",
                 value = state.totalEarnedCoins.toString(),
                 label = Strings.STATS_TOTAL_COINS,
             )
@@ -187,7 +187,7 @@ private fun PlayerSummaryCard(state: StatsState) {
 
             StatItem(
                 icon = levelEmoji(state.playerLevel.level),
-                value = "${Strings.CLINIC_LEVEL} ${state.playerLevel.level}",
+                value = "${Strings.PROFILE_LEVEL} ${state.playerLevel.level}",
                 label = state.playerLevel.title,
             )
         }
@@ -284,7 +284,7 @@ private fun SessionCard(
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "\uD83E\uDDB7",
+                        text = "\u2728",
                         style = MaterialTheme.typography.labelMedium,
                     )
                     Spacer(modifier = Modifier.width(2.dp))
@@ -342,10 +342,10 @@ private fun statusLabel(status: SessionStatus): String = when (status) {
 }
 
 private fun levelEmoji(level: Int): String = when {
-    level >= 10 -> "\uD83C\uDFC6"
-    level >= 7 -> "\uD83C\uDF1F"
-    level >= 5 -> "\uD83D\uDC8E"
-    level >= 3 -> "\uD83E\uDE7A"
-    level >= 2 -> "\uD83D\uDC69\u200D\u2695\uFE0F"
-    else -> "\uD83D\uDC68\u200D\uD83C\uDF93"
+    level >= 10 -> "\uD83C\uDFC6"  // trophy
+    level >= 7 -> "\uD83C\uDF1F"   // glowing star
+    level >= 5 -> "\uD83D\uDC8E"   // gem
+    level >= 3 -> "\uD83D\uDCAA"   // flexed biceps
+    level >= 2 -> "\u26A1"          // lightning
+    else -> "\uD83C\uDF31"          // seedling
 }

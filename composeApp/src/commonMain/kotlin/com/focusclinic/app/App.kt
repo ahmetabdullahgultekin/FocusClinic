@@ -27,11 +27,13 @@ import com.focusclinic.app.presentation.screens.clinic.ClinicScreen
 import com.focusclinic.app.presentation.screens.clinic.ClinicViewModel
 import com.focusclinic.app.presentation.screens.focus.FocusScreen
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
+import com.focusclinic.app.presentation.screens.goals.GoalsScreen
+import com.focusclinic.app.presentation.screens.goals.GoalsViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopScreen
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import com.focusclinic.app.presentation.screens.stats.StatsScreen
 import com.focusclinic.app.presentation.screens.stats.StatsViewModel
-import com.focusclinic.app.presentation.theme.FocusClinicTheme
+import com.focusclinic.app.presentation.theme.IradeTheme
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 
@@ -44,7 +46,7 @@ fun App(
         koinSetup()
         modules(platformModule(), dataModule, domainModule, presentationModule)
     }) {
-        FocusClinicTheme {
+        IradeTheme {
             Surface(
                 modifier = Modifier.fillMaxSize(),
                 color = MaterialTheme.colorScheme.background,
@@ -80,6 +82,10 @@ fun App(
                             Screen.Focus -> {
                                 val viewModel = koinInject<FocusViewModel>()
                                 FocusScreen(viewModel = viewModel)
+                            }
+                            Screen.Goals -> {
+                                val goalsViewModel = koinInject<GoalsViewModel>()
+                                GoalsScreen(viewModel = goalsViewModel)
                             }
                             Screen.Clinic -> {
                                 val clinicViewModel = koinInject<ClinicViewModel>()
