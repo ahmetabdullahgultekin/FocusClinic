@@ -1,12 +1,13 @@
-# Focus Clinic - Architecture Design Document (ADD)
+# İrade (Willpower) - Architecture Design Document (ADD)
 
 ## 1. Project Overview
 
-**Project Name:** Focus Clinic
-**Description:** A gamified productivity application designed for students preparing for difficult exams (e.g., DUS). It combines Pomodoro-style focus mechanics with RPG elements (managing a dental clinic) and a Token Economy system.
+**Project Name:** İrade (Willpower)
+**Description:** A gamified productivity application that strengthens willpower and self-control. It combines Pomodoro-style focus mechanics with RPG progression, custom willpower goals, and a Token Economy system.
 **Platform:** iOS & Android (via Kotlin Multiplatform & Compose Multiplatform).
-**Core Philosophy:** "Productivity meets RPG." The user earns currency by focusing and spends it on real-life rewards (guilt-free breaks) or in-game upgrades (better clinic).
+**Core Philosophy:** "Strengthen your willpower, one focus session at a time." The user earns sparks (currency) by focusing and completing goals, then spends them on real-life rewards or in-app power-ups.
 **Data Strategy:** Fully offline. All data is stored locally on-device. No cloud sync, no remote backend.
+**Language Policy:** All code in English. UI text in Turkish (primary/default) and English (secondary) via string resources.
 
 ## 2. Technical Stack & Libraries
 
@@ -99,7 +100,7 @@ earnedReward = (actualFocusedMinutes / plannedMinutes) * baseReward * 0.5
 ```
 The 0.5 penalty multiplier discourages quitting but doesn't completely punish partial effort. If `actualFocusedMinutes < 5`, rewards are zero regardless.
 
-**Visuals:** A "Patient" character sits in the dental chair. On completion, patient leaves happy. On interruption, patient leaves angrily.
+**Visuals:** Fire emoji on idle, lightning on focusing, glowing star on completion, dash on interruption. Confetti celebration overlay with haptic feedback on successful completion.
 
 **Platform Requirements:**
 * **Android:** Foreground Service + WakeLock to prevent the OS from killing the timer. Notification channel for timer status.
@@ -124,19 +125,19 @@ Coins = floor(FocusMinutes * 5 * EfficiencyMultiplier)
 
 **Level Thresholds:**
 
-| Level | Title | Required Total XP |
-|:---|:---|:---|
-| 1 | Intern (Stajyer) | 0 |
-| 2 | Assistant (Asistan) | 1,000 |
-| 3 | Resident (Araştırma Görevlisi) | 3,000 |
-| 5 | Specialist (Uzman) | 10,000 |
-| 7 | Associate Professor (Doçent) | 25,000 |
-| 10 | Professor (Profesör) | 60,000 |
+| Level | Title (EN) | Title (TR) | Required Total XP |
+|:---|:---|:---|:---|
+| 1 | Beginner | Başlangıç | 0 |
+| 2 | Apprentice | Çırak | 1,000 |
+| 3 | Determined | Kararlı | 3,000 |
+| 5 | Strong | Güçlü | 10,000 |
+| 7 | Master | Usta | 25,000 |
+| 10 | Legend | Efsane | 60,000 |
 
-**Clinic State:** The clinic has visual attributes stored in a `ClinicAttributes` value object:
-* Wall color/theme
-* Chair type
-* Equipment set
+**Profile State:** The profile has visual attributes stored in a `ProfileAttributes` value object:
+* Theme
+* Workspace style
+* Tools (equipment)
 * Decoration items
 
 These attributes are derived from the user's `Inventory` — each purchased item maps to a visual change.
@@ -146,26 +147,55 @@ These attributes are derived from the user's `Inventory` — each purchased item
 **Virtual Shop (In-Game Items):**
 Items that provide stat multipliers or visual upgrades.
 
-| Example Item | Cost | Effect | Type |
+| Item | Cost | Effect | Type |
 |:---|:---|:---|:---|
-| Ergonomic Chair | 500 | +10% XP (multiplier: 1.1) | EQUIPMENT |
-| LED Lamp | 300 | +5% Coins (multiplier: 1.05) | EQUIPMENT |
-| Wall Paint: Ocean | 200 | Visual only | DECORATION |
-| Diploma Frame | 150 | Visual only | DECORATION |
+| Focus Stone | 500 | +10% XP (multiplier: 1.1) | EQUIPMENT |
+| Perseverance Shield | 300 | +5% Sparks (multiplier: 1.05) | EQUIPMENT |
+| Willpower Fire | 800 | +15% XP (multiplier: 1.15) | EQUIPMENT |
+| Patience Medal | 600 | +10% Sparks (multiplier: 1.1) | EQUIPMENT |
+| Peace Garden | 200 | Visual only | DECORATION |
+| Motivation Wall | 150 | Visual only | DECORATION |
+| Inspiration Plant | 100 | Visual only | DECORATION |
+| Victory Aquarium | 350 | Visual only | DECORATION |
 
 * Multiplier effects from multiple items **stack additively** (e.g., 1.1 + 1.05 = 1.15 total bonus), NOT multiplicatively.
 * Total multiplier is capped at 3.0x.
 
 **Real-Life Reward Shop (User-Generated):**
 * Full CRUD operations.
-* User creates custom rewards: "Watch 1 episode" -> Cost: 300 Coins.
-* Purchasing deducts coins and records a transaction.
+* User creates custom rewards: "Watch 1 episode" -> Cost: 300 Sparks.
+* Purchasing deducts sparks and records a transaction.
 * Soft-delete via `is_active` flag.
 
 **Transaction Integrity:**
 * Every coin earn/spend is recorded in the `Transactions` table.
 * `UserProfile.current_coins` is the **derived balance** (sum of all transactions), NOT a manually incremented counter. This prevents desync.
 * All purchase operations are atomic: deduct coins + add inventory/record reward in a single database transaction.
+
+### Feature 4: Willpower Goals
+
+**Goal Lifecycle:**
+* User creates a goal with title, optional description, spark reward, and XP reward.
+* Goals appear on the Goals screen as actionable cards.
+* User completes a goal → earns sparks and XP, completion is recorded.
+* Goals can be edited or deactivated (soft delete).
+
+**Calendar Heatmap:**
+* Monthly calendar view on Goals screen showing completion activity.
+* Days colored by completion count: 1+ light, 3+ medium, 5+ full primary color.
+* Month navigation (previous/next) with completion count recalculation.
+
+**Use Cases:**
+* `CreateWillpowerGoalUseCase` — validates title (not blank), rewards (> 0), saves goal.
+* `CompleteWillpowerGoalUseCase` — records completion, creates `EarnGoal` transaction, adds XP.
+* `UpdateWillpowerGoalUseCase` — validates and updates existing goal.
+* `DeactivateWillpowerGoalUseCase` — soft-deletes goal by setting `isActive = false`.
+
+### Feature 5: Celebrations & Haptic Feedback
+
+* **CelebrationOverlay** — Confetti particle animation with 60 particles, 8 colors, 2.5s duration.
+* **HapticFeedback** — Platform-specific via `expect/actual` with interface extraction for testability.
+  * `medium()` on session start, `success()` on completion, `error()` on interruption.
 
 ## 5. Data Model (SQLDelight Schema)
 
@@ -220,11 +250,35 @@ Items that provide stat multipliers or visual upgrades.
 | Column | Type | Notes |
 |:---|:---|:---|
 | id | TEXT | PK (UUID string) |
-| type | TEXT | `EARN_FOCUS`, `SPEND_SHOP`, `SPEND_REWARD` |
+| type | TEXT | `EARN_FOCUS`, `EARN_GOAL`, `SPEND_SHOP`, `SPEND_REWARD` |
 | amount | INTEGER | Positive for earn, negative for spend |
 | reference_id | TEXT | FK to focus_sessions.id or inventory.item_id or custom_rewards.id |
 | description | TEXT | Human-readable: "Completed 25min session", "Purchased Ergonomic Chair" |
 | created_at | INTEGER | Epoch millis |
+
+**Table: willpower_goals**
+
+| Column | Type | Notes |
+|:---|:---|:---|
+| id | TEXT | PK (UUID string) |
+| title | TEXT | Goal title |
+| description | TEXT | Optional description |
+| coin_reward | INTEGER | Sparks earned on completion |
+| xp_reward | INTEGER | XP earned on completion |
+| is_active | INTEGER | 1 = active, 0 = deactivated |
+| created_at | INTEGER | Epoch millis |
+| updated_at | INTEGER | Epoch millis |
+
+**Table: goal_completions**
+
+| Column | Type | Notes |
+|:---|:---|:---|
+| id | TEXT | PK (UUID string) |
+| goal_id | TEXT | FK to willpower_goals.id |
+| completed_at | INTEGER | Epoch millis |
+| earned_coins | INTEGER | Sparks awarded |
+| earned_xp | INTEGER | XP awarded |
+| note | TEXT | Optional completion note |
 
 **Derived Coin Balance Query:**
 ```sql
@@ -267,10 +321,11 @@ FocusClinic/
 │       │   └── com/focusclinic/app/
 │       │       ├── presentation/
 │       │       │   ├── theme/        # AppTheme, Colors, Typography
-│       │       │   ├── components/   # Reusable Composables (CoinDisplay, TimerRing, PatientAvatar)
+│       │       │   ├── components/   # Reusable Composables (CalendarHeatmap, CelebrationOverlay)
 │       │       │   └── screens/
 │       │       │       ├── focus/    # FocusScreen, FocusState, FocusIntent, FocusViewModel
-│       │       │       ├── clinic/   # ClinicScreen — visual clinic based on inventory
+│       │       │       ├── clinic/   # ProfileScreen — player profile based on inventory
+│       │       │       ├── goals/   # GoalsScreen — willpower goals with calendar heatmap
 │       │       │       ├── shop/     # ShopScreen — virtual items + custom rewards
 │       │       │       └── stats/    # StatsScreen — session history, XP progress
 │       │       ├── navigation/       # Decompose component tree, root component
@@ -285,18 +340,23 @@ FocusClinic/
 
 ## 7. UI/UX Guidelines
 
-* **Theme:** Medical/Clean but Gamified. Primary palette: White, Teal (#009688), Soft Blue (#42A5F5).
-* **Dark Mode:** Implemented via `isSystemInDarkTheme()` with complementary dark palette (Teal 200/Blue 200 tones).
-* **Placeholder Assets:**
-    * `ic_tooth_coin` — Currency icon
-    * `ic_patient_happy` — Session completed
-    * `ic_patient_angry` — Session interrupted
-    * `ic_clinic_default` — Base clinic visual
+* **Theme:** İrade — Willpower/self-control. Primary: Deep Indigo (#3F51B5), Secondary: Warm Gold (#FFC107), Tertiary: Soft Purple (#7E57C2).
+* **Dark Mode:** Implemented via `isSystemInDarkTheme()` with complementary dark palette (Light Indigo/Amber/Light Purple tones).
+* **Emoji Visuals:**
+    * ✨ (sparkles) — Currency/sparks
+    * 🔥 (fire) — Focus ready / willpower
+    * ⚡ (lightning) — Focus in progress
+    * 🌟 (glowing star) — Session completed / success
+    * 💨 (dash) — Session interrupted
+    * 🔮 🛡️ 🏅 🌻 🎨 🌿 🐠 — Shop items
 * **Animations:**
-    * `AnimatedVisibility` for coin earn popups.
-    * Scaling animation on coin counter when balance changes.
-    * State-driven patient expressions (happy/angry) with crossfade.
+    * `CelebrationOverlay` — Confetti particle animation on session completion (60 particles, 8 colors, 2.5s).
+    * `AnimatedContent` with fade transitions between screens and phases.
+    * `animateItem()` on LazyColumn items for smooth list animations.
+    * Animated XP progress bar in profile.
+* **Haptic Feedback:** Medium tap on session start, success feedback on completion, error feedback on interruption.
 * **Typography:** Material 3 defaults. No custom fonts in V1.
+* **Localization:** Turkish (default locale) + English via `composeResources/values/strings.xml`.
 
 ## 8. Testing Strategy
 

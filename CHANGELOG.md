@@ -1,10 +1,43 @@
 # Changelog
 
-All notable changes to the Focus Clinic project will be documented in this file.
+All notable changes to the İrade (Willpower) project will be documented in this file.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
+
+### İrade Transformation (2026-02-14)
+
+**Complete rebrand from "Focus Clinic" (dental theme) to "İrade" (willpower/self-control theme).**
+
+#### Added
+- **WillpowerGoal feature**: Full CRUD for personal goals with coin/XP rewards on completion. Domain entities (`WillpowerGoal`, `GoalCompletion`), repository port, 4 use cases, SQLDelight persistence, MVI presentation.
+- **Goals screen**: New tab with goal list, create/edit dialogs, complete/delete actions.
+- **Calendar heatmap**: Monthly calendar view on Goals screen showing goal completion activity per day with color intensity.
+- **CelebrationOverlay**: Confetti particle animation displayed on focus session completion.
+- **HapticFeedback**: Platform-specific haptic feedback via `expect/actual`. Android: `Vibrator` API. iOS: `UIImpactFeedbackGenerator`. Triggers on session start (medium), completion (success), interruption (error).
+- **Localization resources**: Turkish (`composeResources/values/strings.xml`) as default locale, English (`composeResources/values-en/strings.xml`) as secondary.
+- **`GoalError`** sealed interface in `DomainError.kt` for goal-specific errors.
+- **`EarnGoal`** transaction type for goal completion rewards.
+- **`roadmap.md`**: Project milestones tracking document.
+
+#### Changed
+- **App name**: "Focus Clinic" → "İrade"
+- **Theme**: `FocusClinicTheme` → `IradeTheme`. Colors: Deep Indigo (#3F51B5) + Warm Gold (#FFC107) + Soft Purple (#7E57C2).
+- **PlayerLevel enum**: Intern → Beginner, Assistant → Apprentice, Resident → Determined, Specialist → Strong, Associate Professor → Master, Professor → Legend.
+- **ShopCatalog items**: Ergonomic Chair → Focus Stone, LED Lamp → Perseverance Shield, Sterilizer → Willpower Fire, Digital X-Ray → Patience Medal, Wall Paint → Peace Garden, Diploma Frame → Motivation Wall, Potted Plant → Inspiration Plant, Aquarium → Victory Aquarium.
+- **ProfileAttributes** replaces `ClinicAttributes`.
+- **Currency**: "Coins" → "Sparks" with sparkles emoji (✨) replacing tooth emoji.
+- **Focus screen**: Patient waiting/treating/happy/angry → fire/lightning/star/dash emoji with willpower messages.
+- **Shop screen**: "Clinic Shop" → "Power Shop". Updated item emoji to willpower theme.
+- **Stats screen**: Updated level emoji (seedling, lightning, biceps instead of medical).
+- **Profile screen** (was Clinic): Updated all labels from CLINIC_* to PROFILE_*.
+- **Bottom navigation**: Added Goals tab (5 tabs total). Clinic label → "Profile".
+- **README.md**: Updated for İrade branding, added features section.
+
+#### Removed
+- All dental/clinic/patient/tooth/DUS references from code, strings, and emoji.
+- `ClinicAttributes.kt` (replaced by `ProfileAttributes.kt`).
 
 ### Completion — All ADD.md Spec Items Resolved (2026-02-13)
 
