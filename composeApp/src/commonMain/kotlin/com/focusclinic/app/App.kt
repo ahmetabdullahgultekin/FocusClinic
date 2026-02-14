@@ -27,6 +27,8 @@ import com.focusclinic.app.presentation.screens.clinic.ClinicScreen
 import com.focusclinic.app.presentation.screens.clinic.ClinicViewModel
 import com.focusclinic.app.presentation.screens.focus.FocusScreen
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
+import com.focusclinic.app.presentation.screens.goals.GoalsScreen
+import com.focusclinic.app.presentation.screens.goals.GoalsViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopScreen
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import com.focusclinic.app.presentation.screens.stats.StatsScreen
@@ -80,6 +82,10 @@ fun App(
                             Screen.Focus -> {
                                 val viewModel = koinInject<FocusViewModel>()
                                 FocusScreen(viewModel = viewModel)
+                            }
+                            Screen.Goals -> {
+                                val goalsViewModel = koinInject<GoalsViewModel>()
+                                GoalsScreen(viewModel = goalsViewModel)
                             }
                             Screen.Clinic -> {
                                 val clinicViewModel = koinInject<ClinicViewModel>()

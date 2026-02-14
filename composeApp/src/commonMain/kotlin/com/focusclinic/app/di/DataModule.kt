@@ -8,11 +8,13 @@ import com.focusclinic.data.repository.SqlDelightFocusSessionRepository
 import com.focusclinic.data.repository.SqlDelightInventoryRepository
 import com.focusclinic.data.repository.SqlDelightTransactionRepository
 import com.focusclinic.data.repository.SqlDelightUserProfileRepository
+import com.focusclinic.data.repository.SqlDelightWillpowerGoalRepository
 import com.focusclinic.domain.repository.CustomRewardRepository
 import com.focusclinic.domain.repository.FocusSessionRepository
 import com.focusclinic.domain.repository.InventoryRepository
 import com.focusclinic.domain.repository.TransactionRepository
 import com.focusclinic.domain.repository.UserProfileRepository
+import com.focusclinic.domain.repository.WillpowerGoalRepository
 import kotlin.time.Clock
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -43,4 +45,5 @@ val dataModule = module {
     single<InventoryRepository> { SqlDelightInventoryRepository(get()) }
     single<CustomRewardRepository> { SqlDelightCustomRewardRepository(get()) }
     single<TransactionRepository> { SqlDelightTransactionRepository(get()) }
+    single<WillpowerGoalRepository> { SqlDelightWillpowerGoalRepository(get()) }
 }

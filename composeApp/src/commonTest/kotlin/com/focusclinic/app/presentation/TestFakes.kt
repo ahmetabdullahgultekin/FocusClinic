@@ -3,15 +3,18 @@ package com.focusclinic.app.presentation
 import com.focusclinic.app.platform.TimerNotification
 import com.focusclinic.domain.model.CustomReward
 import com.focusclinic.domain.model.FocusSession
+import com.focusclinic.domain.model.GoalCompletion
 import com.focusclinic.domain.model.InventoryItem
 import com.focusclinic.domain.model.Transaction
 import com.focusclinic.domain.model.TransactionType
 import com.focusclinic.domain.model.UserProfile
+import com.focusclinic.domain.model.WillpowerGoal
 import com.focusclinic.domain.repository.CustomRewardRepository
 import com.focusclinic.domain.repository.FocusSessionRepository
 import com.focusclinic.domain.repository.InventoryRepository
 import com.focusclinic.domain.repository.TransactionRepository
 import com.focusclinic.domain.repository.UserProfileRepository
+import com.focusclinic.domain.repository.WillpowerGoalRepository
 import com.focusclinic.domain.rule.PlayerLevel
 import com.focusclinic.domain.valueobject.Coin
 import com.focusclinic.domain.valueobject.ExperiencePoints
@@ -123,6 +126,34 @@ class FakeTransactionRepository : TransactionRepository {
                 createdAt = 0L,
             )
         )
+    }
+}
+
+class FakeWillpowerGoalRepository : WillpowerGoalRepository {
+    private val goals = MutableStateFlow<Map<String, WillpowerGoal>>(emptyMap())
+    private val completions = MutableStateFlow<List<GoalCompletion>>(emptyList())
+
+    override fun observeActiveGoals(): Flow<List<WillpowerGoal>> =
+        goals.map { map -> map.values.filter { it.isActive } }
+
+    override fun observeCompletions(goalId: String): Flow<List<GoalCompletion>> =
+        completions.map { list -> list.filter { it.goalId == goalId } }
+
+    override fun observeAllCompletions(): Flow<List<GoalCompletion>> = completions
+
+    override suspend fun getGoalById(id: String): WillpowerGoal? = goals.value[id]
+
+    override suspend fun saveGoal(goal: WillpowerGoal) {
+        goals.value = goals.value + (goal.id to goal)
+    }
+
+    override suspend fun deactivateGoal(id: String) {
+        val goal = goals.value[id] ?: return
+        goals.value = goals.value + (id to goal.copy(isActive = false))
+    }
+
+    override suspend fun recordCompletion(completion: GoalCompletion) {
+        completions.value = completions.value + completion
     }
 }
 

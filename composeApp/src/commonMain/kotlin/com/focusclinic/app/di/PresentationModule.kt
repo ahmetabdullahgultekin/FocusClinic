@@ -2,6 +2,7 @@ package com.focusclinic.app.di
 
 import com.focusclinic.app.presentation.screens.clinic.ClinicViewModel
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
+import com.focusclinic.app.presentation.screens.goals.GoalsViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import com.focusclinic.app.presentation.screens.stats.StatsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -41,6 +42,17 @@ val presentationModule = module {
             inventoryRepository = get(),
             customRewardRepository = get(),
             transactionRepository = get(),
+            scope = get(),
+        )
+    }
+
+    factory {
+        GoalsViewModel(
+            createWillpowerGoal = get(),
+            completeWillpowerGoal = get(),
+            updateWillpowerGoal = get(),
+            deactivateWillpowerGoal = get(),
+            goalRepository = get(),
             scope = get(),
         )
     }

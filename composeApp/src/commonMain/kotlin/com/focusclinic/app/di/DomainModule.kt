@@ -1,13 +1,17 @@
 package com.focusclinic.app.di
 
 import com.focusclinic.domain.usecase.CompleteFocusSessionUseCase
+import com.focusclinic.domain.usecase.CompleteWillpowerGoalUseCase
+import com.focusclinic.domain.usecase.CreateWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.DeactivateCustomRewardUseCase
+import com.focusclinic.domain.usecase.DeactivateWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.GetUserStatsUseCase
 import com.focusclinic.domain.usecase.InterruptFocusSessionUseCase
 import com.focusclinic.domain.usecase.PurchaseCustomRewardUseCase
 import com.focusclinic.domain.usecase.PurchaseShopItemUseCase
 import com.focusclinic.domain.usecase.SaveCustomRewardUseCase
 import com.focusclinic.domain.usecase.StartFocusSessionUseCase
+import com.focusclinic.domain.usecase.UpdateWillpowerGoalUseCase
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -80,6 +84,37 @@ val domainModule = module {
     factory {
         DeactivateCustomRewardUseCase(
             rewardRepository = get(),
+        )
+    }
+
+    factory {
+        CreateWillpowerGoalUseCase(
+            goalRepository = get(),
+            idGenerator = get(named("uuid")),
+            clock = get(named("clock")),
+        )
+    }
+
+    factory {
+        CompleteWillpowerGoalUseCase(
+            goalRepository = get(),
+            transactionRepository = get(),
+            userProfileRepository = get(),
+            idGenerator = get(named("uuid")),
+            clock = get(named("clock")),
+        )
+    }
+
+    factory {
+        UpdateWillpowerGoalUseCase(
+            goalRepository = get(),
+            clock = get(named("clock")),
+        )
+    }
+
+    factory {
+        DeactivateWillpowerGoalUseCase(
+            goalRepository = get(),
         )
     }
 }

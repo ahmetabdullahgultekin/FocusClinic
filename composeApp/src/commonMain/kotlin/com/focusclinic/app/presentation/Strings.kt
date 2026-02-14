@@ -80,6 +80,26 @@ object Strings {
     const val STATS_STATUS_INTERRUPTED = "Interrupted"
     const val STATS_STATUS_CANCELLED = "Cancelled"
 
+    // Goals Screen
+    const val GOALS_TITLE = "Goals"
+    const val GOALS_ADD = "Add goal"
+    const val GOALS_EMPTY = "No goals yet. Create one!"
+    const val GOALS_EMPTY_ICON = "\uD83C\uDFAF"
+    const val GOALS_COMPLETE = "Complete"
+    const val GOALS_EDIT = "Edit"
+    const val GOALS_DELETE = "Delete"
+    const val GOALS_COIN_REWARD = "Coins"
+    const val GOALS_XP_REWARD = "XP"
+    const val GOALS_CREATE_TITLE = "Create Goal"
+    const val GOALS_EDIT_TITLE = "Edit Goal"
+    const val GOALS_FIELD_TITLE = "Goal title"
+    const val GOALS_FIELD_DESCRIPTION = "Description (optional)"
+    const val GOALS_FIELD_COINS = "Coin reward"
+    const val GOALS_FIELD_XP = "XP reward"
+    const val GOALS_SAVE = "Save"
+    const val GOALS_CANCEL = "Cancel"
+    const val GOALS_COMPLETED_SUCCESS = "Goal completed!"
+
     // Content Descriptions
     const val CD_TIMER = "Session timer"
     const val CD_PATIENT = "Patient status"
