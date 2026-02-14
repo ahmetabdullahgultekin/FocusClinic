@@ -28,8 +28,8 @@ class PurchaseShopItemUseCaseTest {
     )
 
     private val testItem = ShopItem(
-        id = "ergonomic_chair",
-        name = "Ergonomic Chair",
+        id = "focus_stone",
+        name = "Focus Stone",
         type = ItemType.EQUIPMENT,
         modifier = ModifierType.XpBonus(0.10),
         cost = Coin(500),
@@ -67,7 +67,7 @@ class PurchaseShopItemUseCaseTest {
     fun invoke_WhenSuccess_ShouldAddToInventory() = runTest {
         transactionRepo.seedBalance(500)
         useCase(testItem)
-        assertTrue(inventoryRepo.exists("ergonomic_chair"))
+        assertTrue(inventoryRepo.exists("focus_stone"))
     }
 
     @Test
@@ -82,8 +82,8 @@ class PurchaseShopItemUseCaseTest {
     fun invoke_WhenSuccess_ShouldReturnInventoryItem() = runTest {
         transactionRepo.seedBalance(500)
         val result = useCase(testItem) as DomainResult.Success
-        assertEquals("ergonomic_chair", result.data.itemId)
-        assertEquals("Ergonomic Chair", result.data.name)
+        assertEquals("focus_stone", result.data.itemId)
+        assertEquals("Focus Stone", result.data.name)
         assertEquals(ItemType.EQUIPMENT, result.data.type)
         assertEquals(3000L, result.data.purchasedAt)
     }

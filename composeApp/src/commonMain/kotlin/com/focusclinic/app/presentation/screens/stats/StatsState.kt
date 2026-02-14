@@ -9,7 +9,7 @@ data class StatsState(
     val sessions: List<FocusSession> = emptyList(),
     val totalXp: ExperiencePoints = ExperiencePoints.ZERO,
     val balance: Coin = Coin.ZERO,
-    val playerLevel: PlayerLevel = PlayerLevel.INTERN,
+    val playerLevel: PlayerLevel = PlayerLevel.BEGINNER,
     val isLoading: Boolean = true,
 ) {
     val totalSessions: Int

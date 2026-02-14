@@ -1,4 +1,4 @@
-# Focus Clinic - Project Engineering Standards
+# İrade (Willpower) - Project Engineering Standards
 
 ## Non-Negotiable Principles
 
@@ -85,6 +85,20 @@ These rules apply to EVERY file, class, function, and decision in this project. 
 | Constants | UPPER_SNAKE_CASE | `MAX_MULTIPLIER_CAP` |
 | Mappers | `{Type}.toDomain()`, `{Type}.toDto()` | `FocusSessionEntity.toDomain()` |
 
+## Language Policy
+- **Code language:** ALL code (class names, variable names, function names, comments, documentation, commit messages) MUST be in **English**.
+- **User-facing text:** App UI strings are in **Turkish (primary/native)** and **English (secondary)**. Turkish is the default locale.
+- **String resources:** User-facing strings live in `composeResources/values/strings.xml` (Turkish) and `composeResources/values-en/strings.xml` (English). Never hardcode Turkish or English strings in Kotlin source files.
+- **Domain constants:** Internal enum names, ShopCatalog item IDs, database column names — all English. Display names come from string resources.
+
+## Persistent Session Notes
+> These notes MUST be remembered across sessions. If errors, misdesigns, or problems are encountered, add them here.
+
+- **2026-02-14:** App rebranded from "Focus Clinic" (dental theme) to "İrade" (willpower/self-control theme). All dental references (patient, tooth, clinic, DUS) must be removed.
+- **2026-02-14:** Coding/development in English, UI in Turkish (primary) + English (secondary).
+- **2026-02-14:** Regularly update: CLAUDE.md, README.md, CHANGELOG.md, roadmap.md. Regularly commit and push.
+- **2026-02-14:** TimerNotification testability — extracted interface because `expect class` can't be faked in commonTest (no actual for test source set). Always use interface extraction for expect/actual that needs testing.
+
 ## Documentation & Git Workflow
 
 ### Living Documents — Keep Updated
@@ -94,6 +108,7 @@ These files MUST be updated whenever a significant change happens (new feature, 
 - **`CHANGELOG.md`** — Log every meaningful change with date, category, and description. Follow [Keep a Changelog](https://keepachangelog.com/) format: `Added`, `Changed`, `Fixed`, `Removed`.
 - **`README.md`** — Update when project setup steps change, new modules are added, or the tech stack evolves.
 - **`ADD.md`** — Update when architectural decisions are revised or new features are scoped.
+- **`roadmap.md`** — Track project milestones, completed phases, and upcoming work.
 
 ### Git Discipline
 - **Commit after each meaningful milestone:** completed feature, module setup, major refactor, bug fix. Don't accumulate a huge diff.

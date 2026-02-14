@@ -12,6 +12,18 @@ sealed interface DomainError {
         }
     }
 
+    sealed interface GoalError : DomainError {
+        data object GoalNotFound : GoalError {
+            override val message = "Goal not found"
+        }
+        data object BlankTitle : GoalError {
+            override val message = "Goal title cannot be blank"
+        }
+        data object InvalidReward : GoalError {
+            override val message = "Goal reward must be positive"
+        }
+    }
+
     sealed interface PurchaseError : DomainError {
         data class InsufficientCoins(val required: Long, val available: Long) : PurchaseError {
             override val message = "Insufficient coins: need $required, have $available"

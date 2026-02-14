@@ -15,15 +15,15 @@ enum class PlayerLevel(
     val title: String,
     val requiredXp: ExperiencePoints,
 ) {
-    INTERN(1, "Intern", ExperiencePoints(0)),
-    ASSISTANT(2, "Assistant", ExperiencePoints(1_000)),
-    RESIDENT(3, "Resident", ExperiencePoints(3_000)),
-    SPECIALIST(5, "Specialist", ExperiencePoints(10_000)),
-    ASSOCIATE_PROFESSOR(7, "Associate Professor", ExperiencePoints(25_000)),
-    PROFESSOR(10, "Professor", ExperiencePoints(60_000));
+    BEGINNER(1, "beginner", ExperiencePoints(0)),
+    APPRENTICE(2, "apprentice", ExperiencePoints(1_000)),
+    DETERMINED(3, "determined", ExperiencePoints(3_000)),
+    STRONG(5, "strong", ExperiencePoints(10_000)),
+    MASTER(7, "master", ExperiencePoints(25_000)),
+    LEGEND(10, "legend", ExperiencePoints(60_000));
 
     companion object {
         fun fromXp(xp: ExperiencePoints): PlayerLevel =
-            entries.lastOrNull { xp >= it.requiredXp } ?: INTERN
+            entries.lastOrNull { xp >= it.requiredXp } ?: BEGINNER
     }
 }

@@ -57,7 +57,7 @@ class FakeUserProfileRepository : UserProfileRepository {
     private val profile = MutableStateFlow(
         UserProfile(
             totalXp = ExperiencePoints.ZERO,
-            level = PlayerLevel.INTERN,
+            level = PlayerLevel.BEGINNER,
             createdAt = 0L,
         )
     )

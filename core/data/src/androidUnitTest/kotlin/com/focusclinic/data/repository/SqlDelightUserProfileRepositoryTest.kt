@@ -26,7 +26,7 @@ class SqlDelightUserProfileRepositoryTest {
         val profile = repository.getProfile()
 
         assertEquals(ExperiencePoints.ZERO, profile.totalXp)
-        assertEquals(PlayerLevel.INTERN, profile.level)
+        assertEquals(PlayerLevel.BEGINNER, profile.level)
     }
 
     @Test
@@ -44,7 +44,7 @@ class SqlDelightUserProfileRepositoryTest {
         repository.addXp(ExperiencePoints(1000))
 
         val profile = repository.getProfile()
-        assertEquals(PlayerLevel.ASSISTANT, profile.level)
+        assertEquals(PlayerLevel.APPRENTICE, profile.level)
     }
 
     @Test
@@ -55,7 +55,7 @@ class SqlDelightUserProfileRepositoryTest {
 
         val profile = repository.getProfile()
         assertEquals(ExperiencePoints(1100), profile.totalXp)
-        assertEquals(PlayerLevel.ASSISTANT, profile.level)
+        assertEquals(PlayerLevel.APPRENTICE, profile.level)
     }
 
     @Test
