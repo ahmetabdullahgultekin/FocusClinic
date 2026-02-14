@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">İrade</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_focus">Odak</string>
+    <string name="nav_goals">Hedefler</string>
+    <string name="nav_profile">Profil</string>
+    <string name="nav_shop">Mağaza</string>
+    <string name="nav_stats">İstatistik</string>
+
+    <!-- Focus Screen -->
+    <string name="focus_title">Odak Oturumu</string>
+    <string name="focus_select_duration">Süre Seçin</string>
+    <string name="focus_start">Odaklanmaya Başla</string>
+    <string name="focus_cancel">İptal</string>
+    <string name="focus_minutes_suffix">dk</string>
+    <string name="focus_time_remaining">Kalan Süre</string>
+    <string name="focus_ready">Odaklanmaya hazır...</string>
+    <string name="focus_in_progress">Odağını koru...</string>
+    <string name="focus_success">Odak oturumu tamamlandı!</string>
+    <string name="focus_failed">Oturum yarıda kesildi</string>
+    <string name="focus_session_cancelled">Oturum iptal edildi</string>
+    <string name="focus_completed_title">Oturum Tamamlandı!</string>
+    <string name="focus_interrupted_title">Oturum Yarıda Kesildi</string>
+    <string name="focus_earned_xp">Kazanılan XP</string>
+    <string name="focus_earned_coins">Kazanılan Kıvılcım</string>
+    <string name="focus_continue">Devam</string>
+    <string name="focus_balance">Bakiye</string>
+
+    <!-- Shop Screen -->
+    <string name="shop_tab_virtual">Güç Mağazası</string>
+    <string name="shop_tab_rewards">Ödüllerim</string>
+    <string name="shop_owned">Sahip</string>
+    <string name="shop_buy">Satın Al</string>
+    <string name="shop_redeem">Kullan</string>
+    <string name="shop_create_reward">Ödül Oluştur</string>
+    <string name="shop_reward_title">Ödül başlığı</string>
+    <string name="shop_reward_cost">Maliyet (kıvılcım)</string>
+    <string name="shop_save">Kaydet</string>
+    <string name="shop_cancel">İptal</string>
+    <string name="shop_no_rewards">Henüz ödül yok. Bir tane oluştur!</string>
+    <string name="shop_xp_bonus">XP</string>
+    <string name="shop_coin_bonus">Kıvılcım</string>
+    <string name="shop_decoration">Dekor</string>
+    <string name="shop_purchased">Satın alındı!</string>
+    <string name="shop_redeemed">Kullanıldı!</string>
+    <string name="shop_delete_confirm">Bu ödülü silmek istiyor musun?</string>
+    <string name="shop_yes">Evet</string>
+    <string name="shop_no">Hayır</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_title">Profilim</string>
+    <string name="profile_level">Seviye</string>
+    <string name="profile_xp_progress">XP İlerlemesi</string>
+    <string name="profile_xp_to_next">sonraki seviyeye XP</string>
+    <string name="profile_max_level">Maksimum Seviye Ulaşıldı!</string>
+    <string name="profile_multipliers">Aktif Çarpanlar</string>
+    <string name="profile_xp_multiplier">XP Çarpanı</string>
+    <string name="profile_coin_multiplier">Kıvılcım Çarpanı</string>
+    <string name="profile_tools">Araçlar</string>
+    <string name="profile_decorations">Dekorasyonlar</string>
+    <string name="profile_empty">Alanın boş. Mağazayı ziyaret et!</string>
+    <string name="profile_no_tools">Henüz araç yok</string>
+    <string name="profile_no_decorations">Henüz dekorasyon yok</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">İstatistikler</string>
+    <string name="stats_total_sessions">Oturumlar</string>
+    <string name="stats_completed">Tamamlanan</string>
+    <string name="stats_total_focus">Odak Süresi</string>
+    <string name="stats_total_xp">Toplam XP</string>
+    <string name="stats_total_coins">Toplam Kıvılcım</string>
+    <string name="stats_session_history">Oturum Geçmişi</string>
+    <string name="stats_no_sessions">Henüz oturum yok. Odaklanmaya başla!</string>
+    <string name="stats_hours_suffix">sa</string>
+    <string name="stats_minutes_suffix">dk</string>
+    <string name="stats_status_completed">Tamamlandı</string>
+    <string name="stats_status_interrupted">Yarıda Kesildi</string>
+    <string name="stats_status_cancelled">İptal Edildi</string>
+
+    <!-- Goals Screen -->
+    <string name="goals_title">Hedefler</string>
+    <string name="goals_add">Hedef ekle</string>
+    <string name="goals_empty">Henüz hedef yok. Bir tane oluştur!</string>
+    <string name="goals_complete">Tamamla</string>
+    <string name="goals_edit">Düzenle</string>
+    <string name="goals_delete">Sil</string>
+    <string name="goals_coin_reward">Kıvılcım</string>
+    <string name="goals_xp_reward">XP</string>
+    <string name="goals_create_title">Hedef Oluştur</string>
+    <string name="goals_edit_title">Hedefi Düzenle</string>
+    <string name="goals_field_title">Hedef başlığı</string>
+    <string name="goals_field_description">Açıklama (isteğe bağlı)</string>
+    <string name="goals_field_coins">Kıvılcım ödülü</string>
+    <string name="goals_field_xp">XP ödülü</string>
+    <string name="goals_save">Kaydet</string>
+    <string name="goals_cancel">İptal</string>
+    <string name="goals_completed_success">Hedef tamamlandı!</string>
+
+    <!-- Calendar -->
+    <string name="calendar_previous">Önceki ay</string>
+    <string name="calendar_next">Sonraki ay</string>
+    <string name="calendar_january">Ocak</string>
+    <string name="calendar_february">Şubat</string>
+    <string name="calendar_march">Mart</string>
+    <string name="calendar_april">Nisan</string>
+    <string name="calendar_may">Mayıs</string>
+    <string name="calendar_june">Haziran</string>
+    <string name="calendar_july">Temmuz</string>
+    <string name="calendar_august">Ağustos</string>
+    <string name="calendar_september">Eylül</string>
+    <string name="calendar_october">Ekim</string>
+    <string name="calendar_november">Kasım</string>
+    <string name="calendar_december">Aralık</string>
+
+    <!-- Weekday Headers -->
+    <string name="weekday_mon">Pzt</string>
+    <string name="weekday_tue">Sal</string>
+    <string name="weekday_wed">Çar</string>
+    <string name="weekday_thu">Per</string>
+    <string name="weekday_fri">Cum</string>
+    <string name="weekday_sat">Cmt</string>
+    <string name="weekday_sun">Paz</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_timer">Oturum zamanlayıcısı</string>
+    <string name="cd_focus_status">Odak durumu</string>
+    <string name="cd_coin_icon">Kıvılcımlar</string>
+    <string name="cd_xp_icon">Deneyim puanları</string>
+
+    <!-- Player Levels -->
+    <string name="level_beginner">Başlangıç</string>
+    <string name="level_apprentice">Çırak</string>
+    <string name="level_determined">Kararlı</string>
+    <string name="level_strong">Güçlü</string>
+    <string name="level_master">Usta</string>
+    <string name="level_legend">Efsane</string>
+
+    <!-- Shop Items -->
+    <string name="item_focus_stone">Odak Taşı</string>
+    <string name="item_perseverance_shield">Sebat Kalkanı</string>
+    <string name="item_willpower_fire">İrade Ateşi</string>
+    <string name="item_patience_medal">Sabır Madalyası</string>
+    <string name="item_peace_garden">Huzur Bahçesi</string>
+    <string name="item_motivation_wall">Motivasyon Duvarı</string>
+    <string name="item_inspiration_plant">İlham Bitkisi</string>
+    <string name="item_victory_aquarium">Zafer Akvaryumu</string>
+</resources>
