@@ -6,6 +6,25 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 5: Polish, Localization & Missing Features (2026-02-15)
+
+#### Added
+- **Goal celebration + haptic feedback**: Confetti overlay and haptic feedback on goal completion (success haptic) and failure (error haptic).
+- **Completion note dialog**: Optional note when completing a goal — dialog with text field and Complete/Skip buttons.
+- **Interactive calendar**: Tap a day to see goal completions with names, rewards, and notes. Selected day highlighted with border.
+- **Focus screen active goals widget**: Compact card below Start Focus button showing up to 5 active goals with quick-complete checkmarks.
+- String resources: `goals_completion_note`, `goals_skip`, `calendar_no_completions`, `focus_active_goals` (Turkish + English).
+
+#### Changed
+- **Full localization migration**: Replaced all hardcoded `Strings.kt` constants with `stringResource(Res.string.xxx)` across all screens (Focus, Goals, Shop, Profile, Stats, Calendar, App navigation). Deleted `Strings.kt`.
+- **Clinic → Profile rename**: Renamed `ClinicScreen`/`ClinicViewModel`/`ClinicState` to `ProfileScreen`/`ProfileViewModel`/`ProfileState`. Updated navigation, DI, and all references.
+- CalendarView months and weekday headers now use localized string resources instead of hardcoded English.
+- `modifierLabel()`, `statusLabel()`, `formatDuration()`, `navLabel()`, `monthName()` converted to `@Composable` functions for `stringResource()` access.
+
+#### Removed
+- `Strings.kt` — all hardcoded English UI constants replaced by XML string resources.
+- `screens/clinic/` package — replaced by `screens/profile/`.
+
 ### İrade Transformation (2026-02-14)
 
 **Complete rebrand from "Focus Clinic" (dental theme) to "İrade" (willpower/self-control theme).**

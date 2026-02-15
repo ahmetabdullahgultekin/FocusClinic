@@ -55,7 +55,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.focusclinic.app.presentation.Strings
+import focusclinic.composeapp.generated.resources.Res
+import focusclinic.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import com.focusclinic.domain.model.CustomReward
 import com.focusclinic.domain.model.ModifierType
 import com.focusclinic.domain.model.ShopItem
@@ -66,9 +68,10 @@ fun ShopScreen(viewModel: ShopViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     var showCreateDialog by remember { mutableStateOf(false) }
 
+    val purchasedText = stringResource(Res.string.shop_purchased)
     LaunchedEffect(state.purchaseSuccessMessage) {
         state.purchaseSuccessMessage?.let { name ->
-            snackbarHostState.showSnackbar("$name — ${Strings.SHOP_PURCHASED}")
+            snackbarHostState.showSnackbar("$name — $purchasedText")
             viewModel.onIntent(ShopIntent.DismissPurchaseSuccess)
         }
     }
@@ -90,7 +93,7 @@ fun ShopScreen(viewModel: ShopViewModel) {
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = Strings.SHOP_CREATE_REWARD,
+                        contentDescription = stringResource(Res.string.shop_create_reward),
                     )
                 }
             }
@@ -114,8 +117,8 @@ fun ShopScreen(viewModel: ShopViewModel) {
                         text = {
                             Text(
                                 when (tab) {
-                                    ShopTab.VIRTUAL_SHOP -> Strings.SHOP_TAB_VIRTUAL
-                                    ShopTab.CUSTOM_REWARDS -> Strings.SHOP_TAB_REWARDS
+                                    ShopTab.VIRTUAL_SHOP -> stringResource(Res.string.shop_tab_virtual)
+                                    ShopTab.CUSTOM_REWARDS -> stringResource(Res.string.shop_tab_rewards)
                                 },
                             )
                         },
@@ -175,7 +178,7 @@ private fun BalanceHeader(balance: Long) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "${Strings.FOCUS_BALANCE}: $balance",
+            text = "${stringResource(Res.string.focus_balance)}: $balance",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
@@ -256,7 +259,7 @@ private fun ShopItemCard(
 
             if (isOwned) {
                 Text(
-                    text = Strings.SHOP_OWNED,
+                    text = stringResource(Res.string.shop_owned),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
@@ -272,7 +275,7 @@ private fun ShopItemCard(
                         modifier = Modifier.size(16.dp),
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(Strings.SHOP_BUY)
+                    Text(stringResource(Res.string.shop_buy))
                 }
             }
         }
@@ -293,7 +296,7 @@ private fun CustomRewardsContent(
             contentAlignment = Alignment.Center,
         ) {
             Text(
-                text = Strings.SHOP_NO_REWARDS,
+                text = stringResource(Res.string.shop_no_rewards),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -357,13 +360,13 @@ private fun RewardCard(
                 onClick = onRedeem,
                 enabled = canAfford,
             ) {
-                Text(Strings.SHOP_REDEEM)
+                Text(stringResource(Res.string.shop_redeem))
             }
 
             IconButton(onClick = { showDeleteConfirm = true }) {
                 Icon(
                     imageVector = Icons.Filled.Delete,
-                    contentDescription = Strings.SHOP_DELETE_CONFIRM,
+                    contentDescription = stringResource(Res.string.shop_delete_confirm),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }
@@ -373,19 +376,19 @@ private fun RewardCard(
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text(Strings.SHOP_DELETE_CONFIRM) },
+            title = { Text(stringResource(Res.string.shop_delete_confirm)) },
             text = { Text(reward.title) },
             confirmButton = {
                 TextButton(onClick = {
                     onDelete()
                     showDeleteConfirm = false
                 }) {
-                    Text(Strings.SHOP_YES, color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(Res.string.shop_yes), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteConfirm = false }) {
-                    Text(Strings.SHOP_NO)
+                    Text(stringResource(Res.string.shop_no))
                 }
             },
         )
@@ -402,13 +405,13 @@ private fun CreateRewardDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(Strings.SHOP_CREATE_REWARD) },
+        title = { Text(stringResource(Res.string.shop_create_reward)) },
         text = {
             Column {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text(Strings.SHOP_REWARD_TITLE) },
+                    label = { Text(stringResource(Res.string.shop_reward_title)) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -416,7 +419,7 @@ private fun CreateRewardDialog(
                 OutlinedTextField(
                     value = costText,
                     onValueChange = { costText = it.filter { c -> c.isDigit() } },
-                    label = { Text(Strings.SHOP_REWARD_COST) },
+                    label = { Text(stringResource(Res.string.shop_reward_cost)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth(),
@@ -433,12 +436,12 @@ private fun CreateRewardDialog(
                 },
                 enabled = title.isNotBlank() && (costText.toLongOrNull() ?: 0) > 0,
             ) {
-                Text(Strings.SHOP_SAVE)
+                Text(stringResource(Res.string.shop_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(Strings.SHOP_CANCEL)
+                Text(stringResource(Res.string.shop_cancel))
             }
         },
     )
@@ -456,8 +459,9 @@ private fun itemEmoji(item: ShopItem): String = when (item.id) {
     else -> "\uD83D\uDCE6"                   // package
 }
 
+@Composable
 private fun modifierLabel(modifier: ModifierType): String = when (modifier) {
-    is ModifierType.XpBonus -> "+${(modifier.bonusValue * 100).toInt()}% ${Strings.SHOP_XP_BONUS}"
-    is ModifierType.CoinBonus -> "+${(modifier.bonusValue * 100).toInt()}% ${Strings.SHOP_COIN_BONUS}"
-    ModifierType.None -> Strings.SHOP_DECORATION
+    is ModifierType.XpBonus -> "+${(modifier.bonusValue * 100).toInt()}% ${stringResource(Res.string.shop_xp_bonus)}"
+    is ModifierType.CoinBonus -> "+${(modifier.bonusValue * 100).toInt()}% ${stringResource(Res.string.shop_coin_bonus)}"
+    ModifierType.None -> stringResource(Res.string.shop_decoration)
 }

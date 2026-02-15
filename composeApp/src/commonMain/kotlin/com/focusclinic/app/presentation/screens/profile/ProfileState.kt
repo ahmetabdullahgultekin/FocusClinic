@@ -1,4 +1,4 @@
-package com.focusclinic.app.presentation.screens.clinic
+package com.focusclinic.app.presentation.screens.profile
 
 import com.focusclinic.domain.model.InventoryItem
 import com.focusclinic.domain.model.ItemType
@@ -6,7 +6,7 @@ import com.focusclinic.domain.rule.PlayerLevel
 import com.focusclinic.domain.valueobject.ExperiencePoints
 import com.focusclinic.domain.valueobject.Multiplier
 
-data class ClinicState(
+data class ProfileState(
     val playerLevel: PlayerLevel = PlayerLevel.BEGINNER,
     val totalXp: ExperiencePoints = ExperiencePoints.ZERO,
     val xpMultiplier: Multiplier = Multiplier.BASE,

@@ -28,6 +28,7 @@
     <string name="focus_earned_coins">Sparks Earned</string>
     <string name="focus_continue">Continue</string>
     <string name="focus_balance">Balance</string>
+    <string name="focus_active_goals">Active Goals</string>
 
     <!-- Shop Screen -->
     <string name="shop_tab_virtual">Power Shop</string>
@@ -98,8 +99,11 @@
     <string name="goals_save">Save</string>
     <string name="goals_cancel">Cancel</string>
     <string name="goals_completed_success">Goal completed!</string>
+    <string name="goals_completion_note">Note (optional)</string>
+    <string name="goals_skip">Skip</string>
 
     <!-- Calendar -->
+    <string name="calendar_no_completions">No completions on this day</string>
     <string name="calendar_previous">Previous month</string>
     <string name="calendar_next">Next month</string>
     <string name="calendar_january">January</string>

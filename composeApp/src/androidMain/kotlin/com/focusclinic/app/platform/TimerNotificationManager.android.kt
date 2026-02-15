@@ -14,7 +14,7 @@ actual class TimerNotificationManager(private val context: Context) : TimerNotif
 
     private var wakeLock: PowerManager.WakeLock? = null
 
-    actual fun onSessionStarted(durationMinutes: Int) {
+    actual override fun onSessionStarted(durationMinutes: Int) {
         acquireWakeLock(durationMinutes)
 
         val intent = Intent(context, FocusTimerService::class.java).apply {
@@ -27,13 +27,13 @@ actual class TimerNotificationManager(private val context: Context) : TimerNotif
         }
     }
 
-    actual fun onSessionCompleted(earnedXp: Long, earnedCoins: Long) {
+    actual override fun onSessionCompleted(earnedXp: Long, earnedCoins: Long) {
         stopService()
         releaseWakeLock()
         showCompletionNotification(earnedXp, earnedCoins)
     }
 
-    actual fun onSessionStopped() {
+    actual override fun onSessionStopped() {
         stopService()
         releaseWakeLock()
     }

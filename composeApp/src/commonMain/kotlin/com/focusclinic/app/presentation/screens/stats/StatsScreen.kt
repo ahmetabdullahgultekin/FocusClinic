@@ -27,9 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.focusclinic.app.presentation.Strings
 import com.focusclinic.domain.model.FocusSession
 import com.focusclinic.domain.model.SessionStatus
+import focusclinic.composeapp.generated.resources.Res
+import focusclinic.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun StatsScreen(viewModel: StatsViewModel) {
@@ -52,7 +54,7 @@ fun StatsScreen(viewModel: StatsViewModel) {
     ) {
         item {
             Text(
-                text = Strings.STATS_TITLE,
+                text = stringResource(Res.string.stats_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 4.dp),
@@ -65,7 +67,7 @@ fun StatsScreen(viewModel: StatsViewModel) {
 
         item {
             Text(
-                text = Strings.STATS_SESSION_HISTORY,
+                text = stringResource(Res.string.stats_session_history),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 8.dp),
@@ -96,19 +98,19 @@ private fun SummaryRow(state: StatsState) {
         SummaryCard(
             icon = "\uD83C\uDFAF",  // target
             value = state.totalSessions.toString(),
-            label = Strings.STATS_TOTAL_SESSIONS,
+            label = stringResource(Res.string.stats_total_sessions),
             modifier = Modifier.weight(1f),
         )
         SummaryCard(
             icon = "\u2705",  // check
             value = state.completedSessions.toString(),
-            label = Strings.STATS_COMPLETED,
+            label = stringResource(Res.string.stats_completed),
             modifier = Modifier.weight(1f),
         )
         SummaryCard(
             icon = "\u23F1\uFE0F",  // stopwatch
             value = formatDuration(state.totalFocusMinutes),
-            label = Strings.STATS_TOTAL_FOCUS,
+            label = stringResource(Res.string.stats_total_focus),
             modifier = Modifier.weight(1f),
         )
     }
@@ -172,7 +174,7 @@ private fun PlayerSummaryCard(state: StatsState) {
             StatItem(
                 icon = "\u2B50",
                 value = state.totalEarnedXp.toString(),
-                label = Strings.STATS_TOTAL_XP,
+                label = stringResource(Res.string.stats_total_xp),
             )
 
             VerticalDivider()
@@ -180,14 +182,14 @@ private fun PlayerSummaryCard(state: StatsState) {
             StatItem(
                 icon = "\u2728",
                 value = state.totalEarnedCoins.toString(),
-                label = Strings.STATS_TOTAL_COINS,
+                label = stringResource(Res.string.stats_total_coins),
             )
 
             VerticalDivider()
 
             StatItem(
                 icon = levelEmoji(state.playerLevel.level),
-                value = "${Strings.PROFILE_LEVEL} ${state.playerLevel.level}",
+                value = "${stringResource(Res.string.profile_level)} ${state.playerLevel.level}",
                 label = state.playerLevel.title,
             )
         }
@@ -257,12 +259,12 @@ private fun SessionCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "${session.plannedDuration.minutes} ${Strings.FOCUS_MINUTES_SUFFIX} ${statusLabel(session.status)}",
+                    text = "${session.plannedDuration.minutes} ${stringResource(Res.string.focus_minutes_suffix)} ${statusLabel(session.status)}",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Medium,
                 )
                 Text(
-                    text = "${session.actualFocusMinutes} ${Strings.FOCUS_MINUTES_SUFFIX} focused",
+                    text = "${session.actualFocusMinutes} ${stringResource(Res.string.focus_minutes_suffix)} focused",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -309,7 +311,7 @@ private fun EmptyHistoryMessage() {
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            text = Strings.STATS_NO_SESSIONS,
+            text = stringResource(Res.string.stats_no_sessions),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -317,13 +319,14 @@ private fun EmptyHistoryMessage() {
     }
 }
 
+@Composable
 private fun formatDuration(minutes: Int): String {
     val hours = minutes / 60
     val mins = minutes % 60
     return if (hours > 0) {
-        "$hours${Strings.STATS_HOURS_SUFFIX} $mins${Strings.STATS_MINUTES_SUFFIX}"
+        "$hours${stringResource(Res.string.stats_hours_suffix)} $mins${stringResource(Res.string.stats_minutes_suffix)}"
     } else {
-        "$mins${Strings.STATS_MINUTES_SUFFIX}"
+        "$mins${stringResource(Res.string.stats_minutes_suffix)}"
     }
 }
 
@@ -334,10 +337,11 @@ private fun statusEmoji(status: SessionStatus): String = when (status) {
     else -> "\u2753"                           // question mark
 }
 
+@Composable
 private fun statusLabel(status: SessionStatus): String = when (status) {
-    SessionStatus.Completed -> "— ${Strings.STATS_STATUS_COMPLETED}"
-    SessionStatus.Interrupted -> "— ${Strings.STATS_STATUS_INTERRUPTED}"
-    SessionStatus.Cancelled -> "— ${Strings.STATS_STATUS_CANCELLED}"
+    SessionStatus.Completed -> "— ${stringResource(Res.string.stats_status_completed)}"
+    SessionStatus.Interrupted -> "— ${stringResource(Res.string.stats_status_interrupted)}"
+    SessionStatus.Cancelled -> "— ${stringResource(Res.string.stats_status_cancelled)}"
     else -> ""
 }
 

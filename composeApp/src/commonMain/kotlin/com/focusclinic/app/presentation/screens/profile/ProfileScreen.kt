@@ -1,4 +1,4 @@
-package com.focusclinic.app.presentation.screens.clinic
+package com.focusclinic.app.presentation.screens.profile
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -31,11 +31,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.focusclinic.app.presentation.Strings
 import com.focusclinic.domain.model.InventoryItem
+import focusclinic.composeapp.generated.resources.Res
+import focusclinic.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ClinicScreen(viewModel: ClinicViewModel) {
+fun ProfileScreen(viewModel: ProfileViewModel) {
     val state by viewModel.state.collectAsState()
 
     Column(
@@ -61,17 +63,17 @@ fun ClinicScreen(viewModel: ClinicViewModel) {
         Spacer(modifier = Modifier.height(16.dp))
 
         InventorySection(
-            title = Strings.PROFILE_TOOLS,
+            title = stringResource(Res.string.profile_tools),
             items = state.equipment,
-            emptyMessage = Strings.PROFILE_NO_TOOLS,
+            emptyMessage = stringResource(Res.string.profile_no_tools),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         InventorySection(
-            title = Strings.PROFILE_DECORATIONS,
+            title = stringResource(Res.string.profile_decorations),
             items = state.decorations,
-            emptyMessage = Strings.PROFILE_NO_DECORATIONS,
+            emptyMessage = stringResource(Res.string.profile_no_decorations),
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -96,7 +98,7 @@ private fun ProfileVisual(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = Strings.PROFILE_TITLE,
+                text = stringResource(Res.string.profile_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -106,12 +108,12 @@ private fun ProfileVisual(
 
             if (equipment.isEmpty() && decorations.isEmpty()) {
                 Text(
-                    text = "\uD83D\uDD25",  // fire
+                    text = "\uD83D\uDD25",
                     style = MaterialTheme.typography.displayLarge,
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = Strings.PROFILE_EMPTY,
+                    text = stringResource(Res.string.profile_empty),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -167,7 +169,7 @@ private fun ProfileItemBadge(item: InventoryItem) {
 }
 
 @Composable
-private fun PlayerLevelCard(state: ClinicState) {
+private fun PlayerLevelCard(state: ProfileState) {
     val animatedProgress by animateFloatAsState(
         targetValue = state.xpProgress,
         animationSpec = tween(durationMillis = 500),
@@ -191,7 +193,7 @@ private fun PlayerLevelCard(state: ClinicState) {
             ) {
                 Column {
                     Text(
-                        text = "${Strings.PROFILE_LEVEL} ${state.playerLevel.level}",
+                        text = "${stringResource(Res.string.profile_level)} ${state.playerLevel.level}",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                     )
@@ -210,7 +212,7 @@ private fun PlayerLevelCard(state: ClinicState) {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = Strings.PROFILE_XP_PROGRESS,
+                text = stringResource(Res.string.profile_xp_progress),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
             )
@@ -240,13 +242,13 @@ private fun PlayerLevelCard(state: ClinicState) {
                 )
                 if (state.nextLevel != null) {
                     Text(
-                        text = "${state.xpToNextLevel} ${Strings.PROFILE_XP_TO_NEXT}",
+                        text = "${state.xpToNextLevel} ${stringResource(Res.string.profile_xp_to_next)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 } else {
                     Text(
-                        text = Strings.PROFILE_MAX_LEVEL,
+                        text = stringResource(Res.string.profile_max_level),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
@@ -258,7 +260,7 @@ private fun PlayerLevelCard(state: ClinicState) {
 }
 
 @Composable
-private fun MultiplierCard(state: ClinicState) {
+private fun MultiplierCard(state: ProfileState) {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -266,7 +268,7 @@ private fun MultiplierCard(state: ClinicState) {
                 .padding(16.dp),
         ) {
             Text(
-                text = Strings.PROFILE_MULTIPLIERS,
+                text = stringResource(Res.string.profile_multipliers),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
             )
@@ -278,12 +280,12 @@ private fun MultiplierCard(state: ClinicState) {
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 MultiplierItem(
-                    label = Strings.PROFILE_XP_MULTIPLIER,
+                    label = stringResource(Res.string.profile_xp_multiplier),
                     value = state.xpMultiplier.value,
                     icon = "\u2B50",
                 )
                 MultiplierItem(
-                    label = Strings.PROFILE_COIN_MULTIPLIER,
+                    label = stringResource(Res.string.profile_coin_multiplier),
                     value = state.coinMultiplier.value,
                     icon = "\u2728",
                 )
@@ -375,22 +377,22 @@ private fun formatMultiplier(value: Double): String {
 }
 
 private fun inventoryEmoji(itemId: String): String = when (itemId) {
-    "focus_stone" -> "\uD83D\uDD2E"          // crystal ball
-    "perseverance_shield" -> "\uD83D\uDEE1\uFE0F"  // shield
-    "willpower_fire" -> "\uD83D\uDD25"        // fire
-    "patience_medal" -> "\uD83C\uDFC5"        // medal
-    "peace_garden" -> "\uD83C\uDF3B"          // sunflower
-    "motivation_wall" -> "\uD83C\uDFA8"       // art
-    "inspiration_plant" -> "\uD83C\uDF3F"     // herb
-    "victory_aquarium" -> "\uD83D\uDC20"      // tropical fish
+    "focus_stone" -> "\uD83D\uDD2E"
+    "perseverance_shield" -> "\uD83D\uDEE1\uFE0F"
+    "willpower_fire" -> "\uD83D\uDD25"
+    "patience_medal" -> "\uD83C\uDFC5"
+    "peace_garden" -> "\uD83C\uDF3B"
+    "motivation_wall" -> "\uD83C\uDFA8"
+    "inspiration_plant" -> "\uD83C\uDF3F"
+    "victory_aquarium" -> "\uD83D\uDC20"
     else -> "\uD83D\uDCE6"
 }
 
 private fun levelEmoji(level: Int): String = when {
-    level >= 10 -> "\uD83C\uDFC6"  // trophy
-    level >= 7 -> "\uD83C\uDF1F"   // glowing star
-    level >= 5 -> "\uD83D\uDC8E"   // gem
-    level >= 3 -> "\uD83D\uDCAA"   // flexed biceps
-    level >= 2 -> "\u26A1"          // lightning
-    else -> "\uD83C\uDF31"          // seedling
+    level >= 10 -> "\uD83C\uDFC6"
+    level >= 7 -> "\uD83C\uDF1F"
+    level >= 5 -> "\uD83D\uDC8E"
+    level >= 3 -> "\uD83D\uDCAA"
+    level >= 2 -> "\u26A1"
+    else -> "\uD83C\uDF31"
 }

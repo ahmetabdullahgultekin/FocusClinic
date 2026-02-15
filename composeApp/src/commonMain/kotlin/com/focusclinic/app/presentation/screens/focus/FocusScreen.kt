@@ -22,7 +22,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
@@ -32,6 +35,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -55,8 +59,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.focusclinic.app.platform.AppLifecycleObserver
-import com.focusclinic.app.presentation.Strings
+import focusclinic.composeapp.generated.resources.Res
+import focusclinic.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import com.focusclinic.app.presentation.components.CelebrationOverlay
+import com.focusclinic.domain.model.WillpowerGoal
 import com.focusclinic.domain.valueobject.FocusDuration
 
 @Composable
@@ -90,6 +97,9 @@ fun FocusScreen(viewModel: FocusViewModel) {
                         state = state,
                         onSelectDuration = { viewModel.onIntent(FocusIntent.SelectDuration(it)) },
                         onStart = { viewModel.onIntent(FocusIntent.StartSession) },
+                        onQuickCompleteGoal = {
+                            viewModel.onIntent(FocusIntent.QuickCompleteGoal(it))
+                        },
                     )
                     FocusPhase.Focusing -> FocusingContent(
                         state = state,
@@ -104,7 +114,7 @@ fun FocusScreen(viewModel: FocusViewModel) {
 
             CelebrationOverlay(
                 visible = state.showCelebration,
-                message = Strings.FOCUS_COMPLETED_TITLE,
+                message = stringResource(Res.string.focus_completed_title),
                 emoji = "\uD83C\uDF1F",
                 onDismissed = { viewModel.onIntent(FocusIntent.DismissCelebration) },
             )
@@ -118,16 +128,19 @@ private fun IdleContent(
     state: FocusState,
     onSelectDuration: (FocusDuration) -> Unit,
     onStart: () -> Unit,
+    onQuickCompleteGoal: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
-            text = Strings.FOCUS_READY,
+            text = stringResource(Res.string.focus_ready),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -142,7 +155,7 @@ private fun IdleContent(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = Strings.FOCUS_SELECT_DURATION,
+            text = stringResource(Res.string.focus_select_duration),
             style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -176,10 +189,21 @@ private fun IdleContent(
                 .height(56.dp),
         ) {
             Text(
-                text = Strings.FOCUS_START,
+                text = stringResource(Res.string.focus_start),
                 style = MaterialTheme.typography.titleMedium,
             )
         }
+
+        if (state.activeGoals.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(24.dp))
+
+            ActiveGoalsWidget(
+                goals = state.activeGoals,
+                onQuickComplete = onQuickCompleteGoal,
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 
@@ -196,7 +220,7 @@ private fun FocusingContent(
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
-            text = Strings.FOCUS_IN_PROGRESS,
+            text = stringResource(Res.string.focus_in_progress),
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -219,7 +243,7 @@ private fun FocusingContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = Strings.FOCUS_TIME_REMAINING,
+            text = stringResource(Res.string.focus_time_remaining),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -232,7 +256,7 @@ private fun FocusingContent(
                 contentColor = MaterialTheme.colorScheme.error,
             ),
         ) {
-            Text(Strings.FOCUS_CANCEL)
+            Text(stringResource(Res.string.focus_cancel))
         }
     }
 }
@@ -265,7 +289,7 @@ private fun ResultContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = if (isCompleted) Strings.FOCUS_SUCCESS else Strings.FOCUS_FAILED,
+            text = if (isCompleted) stringResource(Res.string.focus_success) else stringResource(Res.string.focus_failed),
             style = MaterialTheme.typography.titleMedium,
             color = if (isCompleted) MaterialTheme.colorScheme.primary
             else MaterialTheme.colorScheme.error,
@@ -274,7 +298,7 @@ private fun ResultContent(
         Spacer(modifier = Modifier.height(24.dp))
 
         ResultCard(
-            title = if (isCompleted) Strings.FOCUS_COMPLETED_TITLE else Strings.FOCUS_INTERRUPTED_TITLE,
+            title = if (isCompleted) stringResource(Res.string.focus_completed_title) else stringResource(Res.string.focus_interrupted_title),
             earnedXp = result.earnedXp.value,
             earnedCoins = result.earnedCoins.amount,
             isCompleted = isCompleted,
@@ -289,7 +313,7 @@ private fun ResultContent(
                 .height(56.dp),
         ) {
             Text(
-                text = Strings.FOCUS_CONTINUE,
+                text = stringResource(Res.string.focus_continue),
                 style = MaterialTheme.typography.titleMedium,
             )
         }
@@ -308,9 +332,10 @@ private fun TimerRing(
     )
     val primaryColor = MaterialTheme.colorScheme.primary
     val trackColor = MaterialTheme.colorScheme.surfaceVariant
+    val timerContentDescription = stringResource(Res.string.cd_timer)
 
     Box(
-        modifier = modifier.semantics { contentDescription = Strings.CD_TIMER },
+        modifier = modifier.semantics { contentDescription = timerContentDescription },
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -359,9 +384,10 @@ private fun FocusVisual(
         FocusPhase.Completed -> "\uD83C\uDF1F"    // glowing star — success
         FocusPhase.Interrupted -> "\uD83D\uDCA8"  // dash — interrupted
     }
+    val focusStatusContentDescription = stringResource(Res.string.cd_focus_status)
 
     Box(
-        modifier = modifier.semantics { contentDescription = Strings.CD_FOCUS_STATUS },
+        modifier = modifier.semantics { contentDescription = focusStatusContentDescription },
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -382,7 +408,7 @@ private fun DurationChip(
         selected = isSelected,
         onClick = onClick,
         label = {
-            Text("${duration.minutes} ${Strings.FOCUS_MINUTES_SUFFIX}")
+            Text("${duration.minutes} ${stringResource(Res.string.focus_minutes_suffix)}")
         },
         colors = FilterChipDefaults.filterChipColors(
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -404,7 +430,7 @@ private fun BalanceRow(balance: Long) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "${Strings.FOCUS_BALANCE}: $balance",
+            text = "${stringResource(Res.string.focus_balance)}: $balance",
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -454,12 +480,12 @@ private fun ResultCard(
                 horizontalArrangement = Arrangement.SpaceEvenly,
             ) {
                 RewardItem(
-                    label = Strings.FOCUS_EARNED_XP,
+                    label = stringResource(Res.string.focus_earned_xp),
                     value = "+$earnedXp",
                     icon = "\u2B50",  // star
                 )
                 RewardItem(
-                    label = Strings.FOCUS_EARNED_COINS,
+                    label = stringResource(Res.string.focus_earned_coins),
                     value = "+$earnedCoins",
                     icon = "\u2728",  // sparkles
                 )
@@ -491,5 +517,63 @@ private fun RewardItem(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+    }
+}
+
+@Composable
+private fun ActiveGoalsWidget(
+    goals: List<WillpowerGoal>,
+    onQuickComplete: (String) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+        ),
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            Text(
+                text = stringResource(Res.string.focus_active_goals),
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+
+            goals.forEach { goal ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = goal.title,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Medium,
+                        )
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = "\u2B50 ${goal.xpReward.value}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                            Text(
+                                text = "\u2728 ${goal.coinReward.amount}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.secondary,
+                            )
+                        }
+                    }
+                    IconButton(onClick = { onQuickComplete(goal.id) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = stringResource(Res.string.goals_complete),
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    }
+                }
+            }
+        }
     }
 }

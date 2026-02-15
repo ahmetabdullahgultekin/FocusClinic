@@ -1,5 +1,6 @@
 package com.focusclinic.app.presentation.screens.goals
 
+import com.focusclinic.app.platform.HapticFeedback
 import com.focusclinic.domain.model.DomainResult
 import com.focusclinic.domain.model.GoalCompletion
 import com.focusclinic.domain.repository.WillpowerGoalRepository
@@ -20,6 +21,7 @@ class GoalsViewModel(
     private val updateWillpowerGoal: UpdateWillpowerGoalUseCase,
     private val deactivateWillpowerGoal: DeactivateWillpowerGoalUseCase,
     private val goalRepository: WillpowerGoalRepository,
+    private val hapticFeedback: HapticFeedback,
     private val scope: CoroutineScope,
     private val clock: () -> Long,
 ) {
@@ -50,9 +52,22 @@ class GoalsViewModel(
             is GoalsIntent.CompleteGoal -> completeGoal(intent.goalId, intent.note)
             is GoalsIntent.DeactivateGoal -> deactivateGoal(intent.goalId)
             is GoalsIntent.StartEditing -> _state.update { it.copy(editingGoal = intent.goal) }
+            is GoalsIntent.ShowCompleteDialog -> _state.update {
+                it.copy(completingGoalId = intent.goalId)
+            }
+            is GoalsIntent.SelectDay -> selectDay(intent.day)
             GoalsIntent.ShowCreateDialog -> _state.update { it.copy(showCreateDialog = true) }
             GoalsIntent.DismissDialog -> _state.update {
                 it.copy(showCreateDialog = false, editingGoal = null)
+            }
+            GoalsIntent.DismissCompleteDialog -> _state.update {
+                it.copy(completingGoalId = null)
+            }
+            GoalsIntent.DismissCelebration -> _state.update {
+                it.copy(showCelebration = false)
+            }
+            GoalsIntent.DismissDayDetail -> _state.update {
+                it.copy(selectedDay = null, selectedDayCompletions = emptyList())
             }
             GoalsIntent.PreviousMonth -> navigateMonth(-1)
             GoalsIntent.NextMonth -> navigateMonth(1)
@@ -139,14 +154,57 @@ class GoalsViewModel(
     private fun completeGoal(goalId: String, note: String) {
         scope.launch {
             when (val result = completeWillpowerGoal(goalId, note)) {
-                is DomainResult.Success -> _state.update {
-                    it.copy(successMessage = "goal_completed")
+                is DomainResult.Success -> {
+                    hapticFeedback.success()
+                    _state.update {
+                        it.copy(
+                            completingGoalId = null,
+                            showCelebration = true,
+                            successMessage = "goal_completed",
+                        )
+                    }
                 }
-                is DomainResult.Failure -> _state.update {
-                    it.copy(errorMessage = result.error.message)
+                is DomainResult.Failure -> {
+                    hapticFeedback.error()
+                    _state.update {
+                        it.copy(
+                            completingGoalId = null,
+                            errorMessage = result.error.message,
+                        )
+                    }
                 }
             }
         }
+    }
+
+    private fun selectDay(day: Int) {
+        val current = _state.value
+        if (current.selectedDay == day) {
+            _state.update { it.copy(selectedDay = null, selectedDayCompletions = emptyList()) }
+            return
+        }
+
+        val dayCompletions = current.recentCompletions.filter { completion ->
+            val cYear = epochMillisToYear(completion.completedAt)
+            val cMonth = epochMillisToMonth(completion.completedAt)
+            val cDay = epochMillisToDay(completion.completedAt)
+            cYear == current.calendarYear && cMonth == current.calendarMonth && cDay == day
+        }
+
+        val details = dayCompletions.map { completion ->
+            val goalTitle = current.goals.find { it.id == completion.goalId }?.title
+                ?: resolveGoalTitle(completion.goalId)
+            GoalCompletionDetail(goalTitle = goalTitle, completion = completion)
+        }
+
+        _state.update {
+            it.copy(selectedDay = day, selectedDayCompletions = details)
+        }
+    }
+
+    private fun resolveGoalTitle(goalId: String): String {
+        // Fallback — if the goal isn't in active goals, return a generic label
+        return "Goal"
     }
 
     private fun deactivateGoal(goalId: String) {

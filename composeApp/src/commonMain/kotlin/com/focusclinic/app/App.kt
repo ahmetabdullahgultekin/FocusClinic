@@ -23,12 +23,15 @@ import com.focusclinic.app.di.presentationModule
 import com.focusclinic.app.navigation.BottomNavItem
 import com.focusclinic.app.navigation.RootComponent
 import com.focusclinic.app.navigation.Screen
-import com.focusclinic.app.presentation.screens.clinic.ClinicScreen
-import com.focusclinic.app.presentation.screens.clinic.ClinicViewModel
+import focusclinic.composeapp.generated.resources.Res
+import focusclinic.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import com.focusclinic.app.presentation.screens.focus.FocusScreen
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
 import com.focusclinic.app.presentation.screens.goals.GoalsScreen
 import com.focusclinic.app.presentation.screens.goals.GoalsViewModel
+import com.focusclinic.app.presentation.screens.profile.ProfileScreen
+import com.focusclinic.app.presentation.screens.profile.ProfileViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopScreen
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import com.focusclinic.app.presentation.screens.stats.StatsScreen
@@ -58,14 +61,15 @@ fun App(
                     bottomBar = {
                         NavigationBar {
                             BottomNavItem.entries.forEach { item ->
+                                val label = navLabel(item)
                                 NavigationBarItem(
                                     selected = activeScreen == item.screen,
                                     onClick = { rootComponent.navigateTo(item.screen) },
-                                    label = { Text(item.label) },
+                                    label = { Text(label) },
                                     icon = {
                                         Icon(
                                             imageVector = item.icon,
-                                            contentDescription = item.label,
+                                            contentDescription = label,
                                         )
                                     },
                                 )
@@ -87,9 +91,9 @@ fun App(
                                 val goalsViewModel = koinInject<GoalsViewModel>()
                                 GoalsScreen(viewModel = goalsViewModel)
                             }
-                            Screen.Clinic -> {
-                                val clinicViewModel = koinInject<ClinicViewModel>()
-                                ClinicScreen(viewModel = clinicViewModel)
+                            Screen.Profile -> {
+                                val profileViewModel = koinInject<ProfileViewModel>()
+                                ProfileScreen(viewModel = profileViewModel)
                             }
                             Screen.Shop -> {
                                 val shopViewModel = koinInject<ShopViewModel>()
@@ -105,4 +109,13 @@ fun App(
             }
         }
     }
+}
+
+@Composable
+private fun navLabel(item: BottomNavItem): String = when (item) {
+    BottomNavItem.FOCUS -> stringResource(Res.string.nav_focus)
+    BottomNavItem.GOALS -> stringResource(Res.string.nav_goals)
+    BottomNavItem.PROFILE -> stringResource(Res.string.nav_profile)
+    BottomNavItem.SHOP -> stringResource(Res.string.nav_shop)
+    BottomNavItem.STATS -> stringResource(Res.string.nav_stats)
 }

@@ -4,6 +4,7 @@ import com.focusclinic.domain.valueobject.FocusDuration
 
 sealed interface FocusIntent {
     data class SelectDuration(val duration: FocusDuration) : FocusIntent
+    data class QuickCompleteGoal(val goalId: String) : FocusIntent
     data object StartSession : FocusIntent
     data object CancelSession : FocusIntent
     data object DismissResult : FocusIntent

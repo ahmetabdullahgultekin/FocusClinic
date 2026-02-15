@@ -3,6 +3,11 @@ package com.focusclinic.app.presentation.screens.goals
 import com.focusclinic.domain.model.GoalCompletion
 import com.focusclinic.domain.model.WillpowerGoal
 
+data class GoalCompletionDetail(
+    val goalTitle: String,
+    val completion: GoalCompletion,
+)
+
 data class GoalsState(
     val goals: List<WillpowerGoal> = emptyList(),
     val recentCompletions: List<GoalCompletion> = emptyList(),
@@ -15,4 +20,8 @@ data class GoalsState(
     val successMessage: String? = null,
     val showCreateDialog: Boolean = false,
     val editingGoal: WillpowerGoal? = null,
+    val showCelebration: Boolean = false,
+    val completingGoalId: String? = null,
+    val selectedDay: Int? = null,
+    val selectedDayCompletions: List<GoalCompletionDetail> = emptyList(),
 )
