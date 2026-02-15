@@ -5,8 +5,10 @@ import com.focusclinic.app.platform.TimerNotification
 import com.focusclinic.domain.model.DomainResult
 import com.focusclinic.domain.model.FocusSession
 import com.focusclinic.domain.model.SessionStatus
+import com.focusclinic.domain.repository.WillpowerGoalRepository
 import com.focusclinic.domain.rule.FocusRules
 import com.focusclinic.domain.usecase.CompleteFocusSessionUseCase
+import com.focusclinic.domain.usecase.CompleteWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.GetUserStatsUseCase
 import com.focusclinic.domain.usecase.InterruptFocusSessionUseCase
 import com.focusclinic.domain.usecase.StartFocusSessionUseCase
@@ -28,6 +30,8 @@ class FocusViewModel(
     private val completeFocusSession: CompleteFocusSessionUseCase,
     private val interruptFocusSession: InterruptFocusSessionUseCase,
     private val getUserStats: GetUserStatsUseCase,
+    private val goalRepository: WillpowerGoalRepository,
+    private val completeWillpowerGoal: CompleteWillpowerGoalUseCase,
     private val timerNotification: TimerNotification,
     private val hapticFeedback: HapticFeedback,
     private val scope: CoroutineScope,
@@ -41,11 +45,13 @@ class FocusViewModel(
 
     init {
         observeUserStats()
+        observeActiveGoals()
     }
 
     fun onIntent(intent: FocusIntent) {
         when (intent) {
             is FocusIntent.SelectDuration -> selectDuration(intent.duration)
+            is FocusIntent.QuickCompleteGoal -> quickCompleteGoal(intent.goalId)
             FocusIntent.StartSession -> startSession()
             FocusIntent.CancelSession -> cancelSession()
             FocusIntent.DismissResult -> dismissResult()
@@ -210,6 +216,23 @@ class FocusViewModel(
         }
     }
 
+    private fun observeActiveGoals() {
+        scope.launch {
+            goalRepository.observeActiveGoals().collect { goals ->
+                _state.update { it.copy(activeGoals = goals.take(MAX_DISPLAYED_GOALS)) }
+            }
+        }
+    }
+
+    private fun quickCompleteGoal(goalId: String) {
+        scope.launch {
+            when (completeWillpowerGoal(goalId, "")) {
+                is DomainResult.Success -> hapticFeedback.success()
+                is DomainResult.Failure -> hapticFeedback.error()
+            }
+        }
+    }
+
     private fun elapsedMinutes(): Int {
         val current = _state.value
         val elapsedSeconds = current.totalSeconds - current.remainingSeconds
@@ -220,5 +243,6 @@ class FocusViewModel(
         private const val TICK_INTERVAL_MS = 1000L
         private const val SECONDS_PER_MINUTE = 60
         private const val MILLIS_PER_SECOND = 1000L
+        private const val MAX_DISPLAYED_GOALS = 5
     }
 }

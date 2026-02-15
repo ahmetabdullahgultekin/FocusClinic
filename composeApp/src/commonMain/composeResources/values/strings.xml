@@ -28,6 +28,7 @@
     <string name="focus_earned_coins">Kazanılan Kıvılcım</string>
     <string name="focus_continue">Devam</string>
     <string name="focus_balance">Bakiye</string>
+    <string name="focus_active_goals">Aktif Hedefler</string>
 
     <!-- Shop Screen -->
     <string name="shop_tab_virtual">Güç Mağazası</string>
@@ -98,8 +99,11 @@
     <string name="goals_save">Kaydet</string>
     <string name="goals_cancel">İptal</string>
     <string name="goals_completed_success">Hedef tamamlandı!</string>
+    <string name="goals_completion_note">Not (isteğe bağlı)</string>
+    <string name="goals_skip">Atla</string>
 
     <!-- Calendar -->
+    <string name="calendar_no_completions">Bu gün tamamlanan hedef yok</string>
     <string name="calendar_previous">Önceki ay</string>
     <string name="calendar_next">Sonraki ay</string>
     <string name="calendar_january">Ocak</string>

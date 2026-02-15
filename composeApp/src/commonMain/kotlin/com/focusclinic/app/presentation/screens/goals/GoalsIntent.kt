@@ -21,8 +21,13 @@ sealed interface GoalsIntent {
     data class CompleteGoal(val goalId: String, val note: String = "") : GoalsIntent
     data class DeactivateGoal(val goalId: String) : GoalsIntent
     data class StartEditing(val goal: WillpowerGoal) : GoalsIntent
+    data class ShowCompleteDialog(val goalId: String) : GoalsIntent
+    data class SelectDay(val day: Int) : GoalsIntent
     data object ShowCreateDialog : GoalsIntent
     data object DismissDialog : GoalsIntent
+    data object DismissCompleteDialog : GoalsIntent
+    data object DismissCelebration : GoalsIntent
+    data object DismissDayDetail : GoalsIntent
     data object PreviousMonth : GoalsIntent
     data object NextMonth : GoalsIntent
     data object DismissError : GoalsIntent

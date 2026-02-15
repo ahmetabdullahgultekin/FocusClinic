@@ -23,7 +23,7 @@
 - iOS background notification scheduling
 - `expect/actual` lifecycle observer for app backgrounding detection
 
-### Phase 4: İrade Transformation (Completed — Current Release)
+### Phase 4: İrade Transformation (Completed)
 - **Domain Rebrand:** Removed all dental/clinic/patient references. New willpower theme:
   - PlayerLevel: Beginner → Apprentice → Determined → Strong → Master → Legend
   - ShopCatalog: Focus Stone, Perseverance Shield, Willpower Fire, Patience Medal, etc.
@@ -43,22 +43,26 @@
 - **Haptic Feedback:** Platform-specific (Android Vibrator, iOS UIImpactFeedbackGenerator)
   - Medium haptic on session start, success/error haptic on result
 
-## Upcoming
+### Phase 5: Polish, Localization & Missing Features (Completed — Current Release)
+- **Localization migration**: Replaced all `Strings.kt` hardcoded constants with `stringResource(Res.string.xxx)`. Deleted `Strings.kt`. All screens fully localized (Turkish default, English secondary).
+- **Clinic → Profile rename**: Rebranding cleanup — renamed all Clinic* files/classes to Profile*.
+- **Goal celebration + haptic feedback**: Confetti overlay + haptic feedback on goal completion.
+- **Completion note dialog**: Optional note when completing goals (Complete/Skip).
+- **Interactive calendar**: Tap a day to see completions with goal names, rewards, and notes.
+- **Focus screen active goals widget**: Quick-complete up to 5 goals directly from the Focus screen.
+- Localized calendar months and weekday headers via string resources.
 
-### Phase 5: Polish & Quality
-- Migrate composables from `Strings.kt` constants to `stringResource(Res.string.xxx)`
-- Add loading/error/empty states to all screens consistently
-- Improve animations and transitions
-- Accessibility improvements (content descriptions, touch targets)
+## Upcoming
 
 ### Phase 6: Advanced Goals
 - Recurring goals (daily, weekly)
 - Goal categories and filtering
 - Goal completion streaks with bonus multipliers
-- Calendar day detail view (click day to see completions)
 
 ### Phase 7: Enhanced UX
 - Onboarding flow for new users
 - Settings screen (notification preferences, theme selection)
 - Data export (JSON/CSV)
 - Widget support (Android home screen widget for active goals)
+- Add loading/error/empty states to all screens consistently
+- Accessibility improvements (content descriptions, touch targets)

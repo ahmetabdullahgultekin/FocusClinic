@@ -9,7 +9,7 @@ sealed interface Screen {
     data object Focus : Screen
 
     @Serializable
-    data object Clinic : Screen
+    data object Profile : Screen
 
     @Serializable
     data object Shop : Screen

@@ -1,8 +1,10 @@
 package com.focusclinic.app.presentation.screens.goals
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +31,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -50,8 +53,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.focusclinic.app.presentation.Strings
+import focusclinic.composeapp.generated.resources.Res
+import focusclinic.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import com.focusclinic.app.presentation.components.CalendarHeatmap
+import com.focusclinic.app.presentation.components.CelebrationOverlay
 import com.focusclinic.domain.model.WillpowerGoal
 
 @Composable
@@ -66,9 +72,10 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
         }
     }
 
+    val completedSuccessText = stringResource(Res.string.goals_completed_success)
     LaunchedEffect(state.successMessage) {
         state.successMessage?.let {
-            snackbarHostState.showSnackbar(Strings.GOALS_COMPLETED_SUCCESS)
+            snackbarHostState.showSnackbar(completedSuccessText)
             viewModel.onIntent(GoalsIntent.DismissSuccess)
         }
     }
@@ -82,89 +89,114 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
             ) {
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = Strings.GOALS_ADD,
+                    contentDescription = stringResource(Res.string.goals_add),
                 )
             }
         },
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp),
-        ) {
-            Text(
-                text = Strings.GOALS_TITLE,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(vertical = 16.dp),
-            )
-
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                ),
+        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
             ) {
-                CalendarHeatmap(
-                    year = state.calendarYear,
-                    month = state.calendarMonth,
-                    completionCounts = state.calendarCompletionCounts,
-                    onPreviousMonth = { viewModel.onIntent(GoalsIntent.PreviousMonth) },
-                    onNextMonth = { viewModel.onIntent(GoalsIntent.NextMonth) },
-                    onDayClick = { },
-                    modifier = Modifier.padding(8.dp),
+                Text(
+                    text = stringResource(Res.string.goals_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 16.dp),
                 )
-            }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            AnimatedVisibility(
-                visible = state.isLoading,
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    ),
                 ) {
-                    CircularProgressIndicator()
+                    CalendarHeatmap(
+                        year = state.calendarYear,
+                        month = state.calendarMonth,
+                        completionCounts = state.calendarCompletionCounts,
+                        selectedDay = state.selectedDay,
+                        onPreviousMonth = { viewModel.onIntent(GoalsIntent.PreviousMonth) },
+                        onNextMonth = { viewModel.onIntent(GoalsIntent.NextMonth) },
+                        onDayClick = { viewModel.onIntent(GoalsIntent.SelectDay(it)) },
+                        modifier = Modifier.padding(8.dp),
+                    )
                 }
-            }
 
-            AnimatedVisibility(
-                visible = !state.isLoading && state.goals.isEmpty(),
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                EmptyGoalsContent()
-            }
-
-            AnimatedVisibility(
-                visible = !state.isLoading && state.goals.isNotEmpty(),
-                enter = fadeIn(),
-                exit = fadeOut(),
-            ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                AnimatedVisibility(
+                    visible = state.selectedDay != null,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut(),
                 ) {
-                    items(state.goals, key = { it.id }) { goal ->
-                        GoalCard(
-                            goal = goal,
-                            onComplete = { viewModel.onIntent(GoalsIntent.CompleteGoal(goal.id)) },
-                            onEdit = { viewModel.onIntent(GoalsIntent.StartEditing(goal)) },
-                            onDelete = { viewModel.onIntent(GoalsIntent.DeactivateGoal(goal.id)) },
-                        )
+                    DayDetailSection(
+                        day = state.selectedDay ?: 0,
+                        completions = state.selectedDayCompletions,
+                        modifier = Modifier.padding(top = 8.dp),
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                AnimatedVisibility(
+                    visible = state.isLoading,
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                AnimatedVisibility(
+                    visible = !state.isLoading && state.goals.isEmpty(),
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    EmptyGoalsContent()
+                }
+
+                AnimatedVisibility(
+                    visible = !state.isLoading && state.goals.isNotEmpty(),
+                    enter = fadeIn(),
+                    exit = fadeOut(),
+                ) {
+                    LazyColumn(
+                        contentPadding = PaddingValues(vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        items(state.goals, key = { it.id }) { goal ->
+                            GoalCard(
+                                goal = goal,
+                                onComplete = {
+                                    viewModel.onIntent(GoalsIntent.ShowCompleteDialog(goal.id))
+                                },
+                                onEdit = { viewModel.onIntent(GoalsIntent.StartEditing(goal)) },
+                                onDelete = {
+                                    viewModel.onIntent(GoalsIntent.DeactivateGoal(goal.id))
+                                },
+                            )
+                        }
                     }
                 }
             }
+
+            CelebrationOverlay(
+                visible = state.showCelebration,
+                message = stringResource(Res.string.goals_completed_success),
+                emoji = "\uD83C\uDF89",
+                onDismissed = { viewModel.onIntent(GoalsIntent.DismissCelebration) },
+            )
         }
     }
 
     if (state.showCreateDialog) {
         GoalFormDialog(
-            title = Strings.GOALS_CREATE_TITLE,
+            title = stringResource(Res.string.goals_create_title),
             onDismiss = { viewModel.onIntent(GoalsIntent.DismissDialog) },
             onConfirm = { title, desc, coins, xp ->
                 viewModel.onIntent(GoalsIntent.CreateGoal(title, desc, coins, xp))
@@ -175,7 +207,7 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
 
     state.editingGoal?.let { goal ->
         GoalFormDialog(
-            title = Strings.GOALS_EDIT_TITLE,
+            title = stringResource(Res.string.goals_edit_title),
             initialTitle = goal.title,
             initialDescription = goal.description,
             initialCoinReward = goal.coinReward.amount.toString(),
@@ -185,6 +217,15 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                 viewModel.onIntent(GoalsIntent.UpdateGoal(goal.id, title, desc, coins, xp))
             },
             isProcessing = state.isProcessing,
+        )
+    }
+
+    state.completingGoalId?.let { goalId ->
+        CompletionNoteDialog(
+            onDismiss = { viewModel.onIntent(GoalsIntent.DismissCompleteDialog) },
+            onComplete = { note ->
+                viewModel.onIntent(GoalsIntent.CompleteGoal(goalId, note))
+            },
         )
     }
 }
@@ -197,12 +238,12 @@ private fun EmptyGoalsContent() {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = Strings.GOALS_EMPTY_ICON,
+                text = "\uD83C\uDFAF",
                 style = MaterialTheme.typography.displayLarge,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = Strings.GOALS_EMPTY,
+                text = stringResource(Res.string.goals_empty),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -245,7 +286,7 @@ private fun GoalCard(
                     IconButton(onClick = onComplete) {
                         Icon(
                             Icons.Filled.Check,
-                            contentDescription = Strings.GOALS_COMPLETE,
+                            contentDescription = stringResource(Res.string.goals_complete),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(28.dp),
                         )
@@ -253,14 +294,14 @@ private fun GoalCard(
                     IconButton(onClick = onEdit) {
                         Icon(
                             Icons.Filled.Edit,
-                            contentDescription = Strings.GOALS_EDIT,
+                            contentDescription = stringResource(Res.string.goals_edit),
                             modifier = Modifier.size(20.dp),
                         )
                     }
                     IconButton(onClick = onDelete) {
                         Icon(
                             Icons.Filled.Delete,
-                            contentDescription = Strings.GOALS_DELETE,
+                            contentDescription = stringResource(Res.string.goals_delete),
                             tint = MaterialTheme.colorScheme.error,
                             modifier = Modifier.size(20.dp),
                         )
@@ -272,12 +313,12 @@ private fun GoalCard(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 Text(
-                    text = "${Strings.GOALS_COIN_REWARD}: ${goal.coinReward.amount}",
+                    text = "${stringResource(Res.string.goals_coin_reward)}: ${goal.coinReward.amount}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.secondary,
                 )
                 Text(
-                    text = "${Strings.GOALS_XP_REWARD}: ${goal.xpReward.value}",
+                    text = "${stringResource(Res.string.goals_xp_reward)}: ${goal.xpReward.value}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
                 )
@@ -310,14 +351,14 @@ private fun GoalFormDialog(
                 OutlinedTextField(
                     value = goalTitle,
                     onValueChange = { goalTitle = it },
-                    label = { Text(Strings.GOALS_FIELD_TITLE) },
+                    label = { Text(stringResource(Res.string.goals_field_title)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                 )
                 OutlinedTextField(
                     value = goalDescription,
                     onValueChange = { goalDescription = it },
-                    label = { Text(Strings.GOALS_FIELD_DESCRIPTION) },
+                    label = { Text(stringResource(Res.string.goals_field_description)) },
                     modifier = Modifier.fillMaxWidth(),
                     maxLines = 3,
                 )
@@ -325,7 +366,7 @@ private fun GoalFormDialog(
                     OutlinedTextField(
                         value = coinReward,
                         onValueChange = { coinReward = it },
-                        label = { Text(Strings.GOALS_FIELD_COINS) },
+                        label = { Text(stringResource(Res.string.goals_field_coins)) },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
@@ -333,7 +374,7 @@ private fun GoalFormDialog(
                     OutlinedTextField(
                         value = xpReward,
                         onValueChange = { xpReward = it },
-                        label = { Text(Strings.GOALS_FIELD_XP) },
+                        label = { Text(stringResource(Res.string.goals_field_xp)) },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                         singleLine = true,
@@ -350,13 +391,110 @@ private fun GoalFormDialog(
                 },
                 enabled = !isProcessing && goalTitle.isNotBlank(),
             ) {
-                Text(Strings.GOALS_SAVE)
+                Text(stringResource(Res.string.goals_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text(Strings.GOALS_CANCEL)
+                Text(stringResource(Res.string.goals_cancel))
             }
         },
     )
+}
+
+@Composable
+private fun CompletionNoteDialog(
+    onDismiss: () -> Unit,
+    onComplete: (String) -> Unit,
+) {
+    var note by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(Res.string.goals_complete)) },
+        text = {
+            OutlinedTextField(
+                value = note,
+                onValueChange = { note = it },
+                label = { Text(stringResource(Res.string.goals_completion_note)) },
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 3,
+            )
+        },
+        confirmButton = {
+            Button(onClick = { onComplete(note.trim()) }) {
+                Text(stringResource(Res.string.goals_complete))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onComplete("") }) {
+                Text(stringResource(Res.string.goals_skip))
+            }
+        },
+    )
+}
+
+@Composable
+private fun DayDetailSection(
+    day: Int,
+    completions: List<GoalCompletionDetail>,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+        ),
+    ) {
+        Column(modifier = Modifier.padding(12.dp)) {
+            if (completions.isEmpty()) {
+                Text(
+                    text = stringResource(Res.string.calendar_no_completions),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                completions.forEachIndexed { index, detail ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = detail.goalTitle,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Medium,
+                            )
+                            if (detail.completion.note.isNotBlank()) {
+                                Text(
+                                    text = detail.completion.note,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = "\u2B50 +${detail.completion.earnedXp.value}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.tertiary,
+                            )
+                            Text(
+                                text = "\u2728 +${detail.completion.earnedCoins.amount}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.secondary,
+                            )
+                        }
+                    }
+                    if (index < completions.lastIndex) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(vertical = 2.dp),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

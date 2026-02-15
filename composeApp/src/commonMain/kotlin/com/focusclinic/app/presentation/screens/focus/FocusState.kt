@@ -1,5 +1,6 @@
 package com.focusclinic.app.presentation.screens.focus
 
+import com.focusclinic.domain.model.WillpowerGoal
 import com.focusclinic.domain.valueobject.Coin
 import com.focusclinic.domain.valueobject.ExperiencePoints
 import com.focusclinic.domain.valueobject.FocusDuration
@@ -17,6 +18,7 @@ data class FocusState(
     val sessionResult: SessionResult? = null,
     val showCelebration: Boolean = false,
     val errorMessage: String? = null,
+    val activeGoals: List<WillpowerGoal> = emptyList(),
 ) {
     val progress: Float
         get() = if (totalSeconds > 0) remainingSeconds.toFloat() / totalSeconds else 0f

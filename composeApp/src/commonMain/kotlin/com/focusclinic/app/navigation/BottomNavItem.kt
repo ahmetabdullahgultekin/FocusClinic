@@ -9,13 +9,12 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
 enum class BottomNavItem(
-    val label: String,
     val screen: Screen,
     val icon: ImageVector,
 ) {
-    FOCUS("Focus", Screen.Focus, Icons.Filled.Home),
-    GOALS("Goals", Screen.Goals, Icons.Filled.CheckCircle),
-    CLINIC("Profile", Screen.Clinic, Icons.Filled.Favorite),
-    SHOP("Shop", Screen.Shop, Icons.Filled.ShoppingCart),
-    STATS("Stats", Screen.Stats, Icons.Filled.Star),
+    FOCUS(Screen.Focus, Icons.Filled.Home),
+    GOALS(Screen.Goals, Icons.Filled.CheckCircle),
+    PROFILE(Screen.Profile, Icons.Filled.Favorite),
+    SHOP(Screen.Shop, Icons.Filled.ShoppingCart),
+    STATS(Screen.Stats, Icons.Filled.Star),
 }

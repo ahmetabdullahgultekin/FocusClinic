@@ -1,6 +1,7 @@
 package com.focusclinic.app.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,13 +29,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.focusclinic.app.presentation.Strings
+import focusclinic.composeapp.generated.resources.Res
+import focusclinic.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun CalendarHeatmap(
     year: Int,
     month: Int,
     completionCounts: Map<Int, Int>,
+    selectedDay: Int? = null,
     onPreviousMonth: () -> Unit,
     onNextMonth: () -> Unit,
     onDayClick: (Int) -> Unit,
@@ -52,7 +56,7 @@ fun CalendarHeatmap(
             IconButton(onClick = onPreviousMonth) {
                 Icon(
                     Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                    contentDescription = Strings.CALENDAR_PREVIOUS,
+                    contentDescription = stringResource(Res.string.calendar_previous),
                 )
             }
             Text(
@@ -63,18 +67,28 @@ fun CalendarHeatmap(
             IconButton(onClick = onNextMonth) {
                 Icon(
                     Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = Strings.CALENDAR_NEXT,
+                    contentDescription = stringResource(Res.string.calendar_next),
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        val weekdayHeaders = listOf(
+            stringResource(Res.string.weekday_mon),
+            stringResource(Res.string.weekday_tue),
+            stringResource(Res.string.weekday_wed),
+            stringResource(Res.string.weekday_thu),
+            stringResource(Res.string.weekday_fri),
+            stringResource(Res.string.weekday_sat),
+            stringResource(Res.string.weekday_sun),
+        )
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            WEEKDAY_HEADERS.forEach { header ->
+            weekdayHeaders.forEach { header ->
                 Text(
                     text = header,
                     style = MaterialTheme.typography.labelSmall,
@@ -106,6 +120,7 @@ fun CalendarHeatmap(
                         DayCell(
                             day = day,
                             completionCount = count,
+                            isSelected = day == selectedDay,
                             onClick = { onDayClick(day) },
                             modifier = Modifier.weight(1f),
                         )
@@ -121,6 +136,7 @@ fun CalendarHeatmap(
 private fun DayCell(
     day: Int,
     completionCount: Int,
+    isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -134,12 +150,18 @@ private fun DayCell(
         completionCount >= 3 -> MaterialTheme.colorScheme.onPrimary
         else -> MaterialTheme.colorScheme.onSurface
     }
+    val selectionBorder = if (isSelected) {
+        Modifier.border(2.dp, MaterialTheme.colorScheme.tertiary, CircleShape)
+    } else {
+        Modifier
+    }
 
     Box(
         modifier = modifier
             .aspectRatio(1f)
             .padding(2.dp)
             .clip(CircleShape)
+            .then(selectionBorder)
             .background(backgroundColor)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
@@ -148,6 +170,7 @@ private fun DayCell(
             text = day.toString(),
             style = MaterialTheme.typography.bodySmall,
             color = textColor,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
         )
     }
 }
@@ -178,20 +201,19 @@ private fun firstDayOfWeek(year: Int, month: Int): Int {
     return ((h + 5) % 7)
 }
 
+@Composable
 private fun monthName(month: Int): String = when (month) {
-    1 -> "January"
-    2 -> "February"
-    3 -> "March"
-    4 -> "April"
-    5 -> "May"
-    6 -> "June"
-    7 -> "July"
-    8 -> "August"
-    9 -> "September"
-    10 -> "October"
-    11 -> "November"
-    12 -> "December"
+    1 -> stringResource(Res.string.calendar_january)
+    2 -> stringResource(Res.string.calendar_february)
+    3 -> stringResource(Res.string.calendar_march)
+    4 -> stringResource(Res.string.calendar_april)
+    5 -> stringResource(Res.string.calendar_may)
+    6 -> stringResource(Res.string.calendar_june)
+    7 -> stringResource(Res.string.calendar_july)
+    8 -> stringResource(Res.string.calendar_august)
+    9 -> stringResource(Res.string.calendar_september)
+    10 -> stringResource(Res.string.calendar_october)
+    11 -> stringResource(Res.string.calendar_november)
+    12 -> stringResource(Res.string.calendar_december)
     else -> ""
 }
-
-private val WEEKDAY_HEADERS = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")

@@ -1,4 +1,4 @@
-package com.focusclinic.app.presentation.screens.clinic
+package com.focusclinic.app.presentation.screens.profile
 
 import com.focusclinic.domain.model.ItemType
 import com.focusclinic.domain.repository.InventoryRepository
@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ClinicViewModel(
+class ProfileViewModel(
     private val getUserStats: GetUserStatsUseCase,
     private val inventoryRepository: InventoryRepository,
     private val scope: CoroutineScope,
 ) {
-    private val _state = MutableStateFlow(ClinicState())
-    val state: StateFlow<ClinicState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(ProfileState())
+    val state: StateFlow<ProfileState> = _state.asStateFlow()
 
     init {
         observeUserStats()
