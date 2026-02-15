@@ -47,6 +47,8 @@ class SqlDelightWillpowerGoalRepository(
             coin_reward = goal.coinReward.amount,
             xp_reward = goal.xpReward.value,
             is_active = if (goal.isActive) 1L else 0L,
+            recurrence_type = goal.recurrenceType.dbValue,
+            category = goal.category,
             created_at = goal.createdAt,
             updated_at = goal.updatedAt,
         )
@@ -66,4 +68,17 @@ class SqlDelightWillpowerGoalRepository(
             note = completion.note,
         )
     }
+
+    override suspend fun getCompletionsInRange(
+        goalId: String,
+        startMillis: Long,
+        endMillis: Long,
+    ): List<GoalCompletion> =
+        completionQueries.getByGoalIdInRange(goalId, startMillis, endMillis)
+            .executeAsList()
+            .map { it.toDomain() }
+
+    override suspend fun getAllCompletionDates(): List<Long> =
+        completionQueries.getAllCompletedAtDates()
+            .executeAsList()
 }

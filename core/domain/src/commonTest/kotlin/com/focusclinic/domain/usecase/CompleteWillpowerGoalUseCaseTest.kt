@@ -3,6 +3,7 @@ package com.focusclinic.domain.usecase
 import com.focusclinic.domain.model.DomainError
 import com.focusclinic.domain.model.DomainResult
 import com.focusclinic.domain.model.GoalCompletion
+import com.focusclinic.domain.model.RecurrenceType
 import com.focusclinic.domain.model.WillpowerGoal
 import com.focusclinic.domain.test.FakeTransactionRepository
 import com.focusclinic.domain.test.FakeUserProfileRepository
@@ -25,6 +26,7 @@ class CompleteWillpowerGoalUseCaseTest {
         goalRepository = goalRepo,
         transactionRepository = transactionRepo,
         userProfileRepository = userProfileRepo,
+        calculateStreak = CalculateStreakUseCase(goalRepo, clock = { 2000L }),
         idGenerator = { "comp-${++idCounter}" },
         clock = { 2000L },
     )
@@ -36,6 +38,8 @@ class CompleteWillpowerGoalUseCaseTest {
         coinReward = Coin(10),
         xpReward = ExperiencePoints(20),
         isActive = true,
+        recurrenceType = RecurrenceType.None,
+        category = "",
         createdAt = 1000L,
         updatedAt = 1000L,
     )

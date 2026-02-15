@@ -24,4 +24,10 @@ data class GoalsState(
     val completingGoalId: String? = null,
     val selectedDay: Int? = null,
     val selectedDayCompletions: List<GoalCompletionDetail> = emptyList(),
+    val selectedCategory: String? = null,
+    val currentStreak: Int = 0,
+    val bestStreak: Int = 0,
+    val streakMultiplier: Double = 1.0,
+    val completableGoalIds: Set<String> = emptySet(),
+    val availableCategories: List<String> = emptyList(),
 )

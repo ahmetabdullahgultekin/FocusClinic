@@ -142,6 +142,34 @@ class FakeWillpowerGoalRepository : WillpowerGoalRepository {
     override suspend fun recordCompletion(completion: GoalCompletion) {
         completions.value = completions.value + completion
     }
+
+    override suspend fun getCompletionsInRange(
+        goalId: String,
+        startMillis: Long,
+        endMillis: Long,
+    ): List<GoalCompletion> =
+        completions.value.filter {
+            it.goalId == goalId && it.completedAt >= startMillis && it.completedAt < endMillis
+        }
+
+    override suspend fun getAllCompletionDates(): List<Long> =
+        completions.value.map { it.completedAt }.sorted()
+}
+
+class FakeSettingsRepository : com.focusclinic.domain.repository.SettingsRepository {
+    private var onboardingCompleted = false
+    private var themePreference: com.focusclinic.domain.model.ThemePreference =
+        com.focusclinic.domain.model.ThemePreference.System
+    private var notificationsEnabled = true
+
+    override suspend fun isOnboardingCompleted(): Boolean = onboardingCompleted
+    override suspend fun markOnboardingCompleted() { onboardingCompleted = true }
+    override suspend fun getThemePreference(): com.focusclinic.domain.model.ThemePreference = themePreference
+    override suspend fun setThemePreference(preference: com.focusclinic.domain.model.ThemePreference) {
+        themePreference = preference
+    }
+    override suspend fun isNotificationsEnabled(): Boolean = notificationsEnabled
+    override suspend fun setNotificationsEnabled(enabled: Boolean) { notificationsEnabled = enabled }
 }
 
 class FakeCustomRewardRepository : CustomRewardRepository {

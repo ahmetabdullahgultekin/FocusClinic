@@ -2,6 +2,7 @@ package com.focusclinic.domain.usecase
 
 import com.focusclinic.domain.model.DomainError
 import com.focusclinic.domain.model.DomainResult
+import com.focusclinic.domain.model.RecurrenceType
 import com.focusclinic.domain.model.WillpowerGoal
 import com.focusclinic.domain.repository.WillpowerGoalRepository
 import com.focusclinic.domain.valueobject.Coin
@@ -17,6 +18,8 @@ class CreateWillpowerGoalUseCase(
         description: String,
         coinReward: Long,
         xpReward: Long,
+        recurrenceType: RecurrenceType = RecurrenceType.None,
+        category: String = "",
     ): DomainResult<WillpowerGoal> {
         if (title.isBlank()) {
             return DomainResult.Failure(DomainError.GoalError.BlankTitle)
@@ -33,6 +36,8 @@ class CreateWillpowerGoalUseCase(
             coinReward = Coin(coinReward),
             xpReward = ExperiencePoints(xpReward),
             isActive = true,
+            recurrenceType = recurrenceType,
+            category = category.trim(),
             createdAt = now,
             updatedAt = now,
         )

@@ -3,6 +3,7 @@ package com.focusclinic.app.di
 import com.focusclinic.app.presentation.screens.focus.FocusViewModel
 import com.focusclinic.app.presentation.screens.goals.GoalsViewModel
 import com.focusclinic.app.presentation.screens.profile.ProfileViewModel
+import com.focusclinic.app.presentation.screens.settings.SettingsViewModel
 import com.focusclinic.app.presentation.screens.shop.ShopViewModel
 import com.focusclinic.app.presentation.screens.stats.StatsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -56,6 +57,8 @@ val presentationModule = module {
             completeWillpowerGoal = get(),
             updateWillpowerGoal = get(),
             deactivateWillpowerGoal = get(),
+            isGoalCompletable = get(),
+            calculateStreak = get(),
             goalRepository = get(),
             hapticFeedback = get(),
             scope = get(),
@@ -67,6 +70,13 @@ val presentationModule = module {
         StatsViewModel(
             getUserStats = get(),
             sessionRepository = get(),
+            scope = get(),
+        )
+    }
+
+    factory {
+        SettingsViewModel(
+            settingsRepository = get(),
             scope = get(),
         )
     }

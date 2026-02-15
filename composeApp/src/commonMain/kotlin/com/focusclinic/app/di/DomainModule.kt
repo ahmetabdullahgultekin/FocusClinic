@@ -1,5 +1,6 @@
 package com.focusclinic.app.di
 
+import com.focusclinic.domain.usecase.CalculateStreakUseCase
 import com.focusclinic.domain.usecase.CompleteFocusSessionUseCase
 import com.focusclinic.domain.usecase.CompleteWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.CreateWillpowerGoalUseCase
@@ -7,6 +8,7 @@ import com.focusclinic.domain.usecase.DeactivateCustomRewardUseCase
 import com.focusclinic.domain.usecase.DeactivateWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.GetUserStatsUseCase
 import com.focusclinic.domain.usecase.InterruptFocusSessionUseCase
+import com.focusclinic.domain.usecase.IsGoalCompletableUseCase
 import com.focusclinic.domain.usecase.PurchaseCustomRewardUseCase
 import com.focusclinic.domain.usecase.PurchaseShopItemUseCase
 import com.focusclinic.domain.usecase.SaveCustomRewardUseCase
@@ -96,10 +98,25 @@ val domainModule = module {
     }
 
     factory {
+        CalculateStreakUseCase(
+            goalRepository = get(),
+            clock = get(named("clock")),
+        )
+    }
+
+    factory {
+        IsGoalCompletableUseCase(
+            goalRepository = get(),
+            clock = get(named("clock")),
+        )
+    }
+
+    factory {
         CompleteWillpowerGoalUseCase(
             goalRepository = get(),
             transactionRepository = get(),
             userProfileRepository = get(),
+            calculateStreak = get(),
             idGenerator = get(named("uuid")),
             clock = get(named("clock")),
         )

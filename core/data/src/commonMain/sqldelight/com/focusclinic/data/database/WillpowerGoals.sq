@@ -5,6 +5,8 @@ CREATE TABLE IF NOT EXISTS willpower_goals (
     coin_reward INTEGER NOT NULL,
     xp_reward INTEGER NOT NULL,
     is_active INTEGER NOT NULL DEFAULT 1,
+    recurrence_type TEXT NOT NULL DEFAULT 'NONE',
+    category TEXT NOT NULL DEFAULT '',
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL
 );
@@ -16,8 +18,8 @@ getById:
 SELECT * FROM willpower_goals WHERE id = ?;
 
 upsert:
-INSERT OR REPLACE INTO willpower_goals(id, title, description, coin_reward, xp_reward, is_active, created_at, updated_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO willpower_goals(id, title, description, coin_reward, xp_reward, is_active, recurrence_type, category, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deactivate:
 UPDATE willpower_goals SET is_active = 0 WHERE id = ?;

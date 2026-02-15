@@ -12,4 +12,6 @@ interface WillpowerGoalRepository {
     suspend fun saveGoal(goal: WillpowerGoal)
     suspend fun deactivateGoal(id: String)
     suspend fun recordCompletion(completion: GoalCompletion)
+    suspend fun getCompletionsInRange(goalId: String, startMillis: Long, endMillis: Long): List<GoalCompletion>
+    suspend fun getAllCompletionDates(): List<Long>
 }

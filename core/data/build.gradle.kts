@@ -59,6 +59,7 @@ sqldelight {
     databases {
         create("FocusClinicDatabase") {
             packageName.set("com.focusclinic.data.database")
+            version = 2
         }
     }
 }

@@ -6,6 +6,38 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+### Phase 6: Advanced Goals + Phase 7: Enhanced UX (2026-02-15)
+
+#### Added
+- **Recurring goals**: Goals can be set to `Daily` or `Weekly` recurrence. Daily goals can be completed once per day, weekly once per week. Recurrence type selector in goal create/edit dialog.
+- **Goal categories**: 6 predefined categories (Health, Productivity, Learning, Fitness, Habits, Other). Category selector dropdown in goal form. Horizontal `FilterChip` row for category-based filtering on Goals screen.
+- **Streak system**: Tracks consecutive days with at least one goal completion. Current streak (fire emoji) and best streak (trophy emoji) displayed in `StreakCard`. Tier-based multipliers: 3 days → 1.1x, 7 days → 1.25x, 14 days → 1.5x, 30 days → 2.0x.
+- **Streak bonus multiplier**: Applied to coin and XP rewards on goal completion via `CompleteWillpowerGoalUseCase`.
+- **Onboarding flow**: 3-page `HorizontalPager` (Welcome, Focus Sessions, Goals & Rewards) with page indicators, Skip button, and Next/Start navigation. Shown once on first launch; completion state persisted in database.
+- **Settings screen**: Accessible from Profile via gear icon. Notification toggle, theme selector (System/Light/Dark `FilterChips`), data export button, about section with version info. Full MVI architecture (`SettingsViewModel`/`SettingsState`/`SettingsIntent`).
+- **`IsGoalCompletableUseCase`**: Checks whether a recurring goal can be completed based on existing completions within the current period (day/week).
+- **`CalculateStreakUseCase`**: Computes current and best streaks from all completion dates.
+- **`StreakRules`**: Constants and `multiplierForStreak()` function for tier-based streak bonuses.
+- **`StreakInfo`** model: `data class StreakInfo(current, best)`.
+- **`RecurrenceType`** sealed interface: `None`, `Daily`, `Weekly` with `dbValue`/`fromDbValue` serialization.
+- **`GoalCategory`** object: Predefined category constants and `PREDEFINED` list.
+- **`ThemePreference`** sealed interface: `System`, `Light`, `Dark` with DB serialization.
+- **`SettingsRepository`** port + `SqlDelightSettingsRepository` implementation: onboarding, theme, notifications persistence.
+- **SQLDelight migration (v1→v2)**: Added `recurrence_type` and `category` columns to `willpower_goals`, added `onboarding_completed`, `notifications_enabled`, `theme_preference` columns to `user_profile`.
+- New string resources (Turkish + English): recurrence labels, category names, streak display, onboarding pages, settings labels.
+
+#### Changed
+- **`WillpowerGoal`** model: Added `recurrenceType: RecurrenceType` and `category: String` fields.
+- **`WillpowerGoalRepository`** port: Added `getCompletionsInRange()` and `getAllCompletionDates()` methods.
+- **`CompleteWillpowerGoalUseCase`**: Now injects `CalculateStreakUseCase`, applies streak multiplier to rewards.
+- **`CreateWillpowerGoalUseCase`** and **`UpdateWillpowerGoalUseCase`**: Accept `recurrenceType` and `category` parameters.
+- **`GoalsViewModel`**: Injects `IsGoalCompletableUseCase` and `CalculateStreakUseCase`. Manages category filtering, streak refresh, completability checks.
+- **`GoalsScreen`**: New `StreakCard`, `CategoryFilterRow`, `RecurrenceBadge` composables. Goal cards show recurrence badge and category chip. Already-completed recurring goals are dimmed and disabled.
+- **`ProfileScreen`**: Added settings gear icon button in top-right corner.
+- **`App.kt`**: Added onboarding check on launch, routing for `Screen.Onboarding` and `Screen.Settings`. Bottom nav hidden during onboarding and settings.
+- **`Screen.kt`**: Added `Screen.Onboarding` and `Screen.Settings` serializable objects.
+- DI modules updated: `domainModule` (new use cases), `dataModule` (settings repository), `presentationModule` (settings VM, goals VM params).
+
 ### Phase 5: Polish, Localization & Missing Features (2026-02-15)
 
 #### Added

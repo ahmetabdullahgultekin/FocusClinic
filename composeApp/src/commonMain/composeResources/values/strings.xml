@@ -101,6 +101,30 @@
     <string name="goals_completed_success">Hedef tamamlandı!</string>
     <string name="goals_completion_note">Not (isteğe bağlı)</string>
     <string name="goals_skip">Atla</string>
+    <string name="goals_field_recurrence">Tekrarlama</string>
+    <string name="goals_field_category">Kategori</string>
+    <string name="goals_completed_today">Bugün tamamlandı</string>
+    <string name="goals_completed_this_week">Bu hafta tamamlandı</string>
+
+    <!-- Recurrence -->
+    <string name="recurrence_none">Tek Seferlik</string>
+    <string name="recurrence_daily">Günlük</string>
+    <string name="recurrence_weekly">Haftalık</string>
+
+    <!-- Categories -->
+    <string name="category_all">Tümü</string>
+    <string name="category_health">Sağlık</string>
+    <string name="category_productivity">Üretkenlik</string>
+    <string name="category_learning">Öğrenme</string>
+    <string name="category_fitness">Fitness</string>
+    <string name="category_habits">Alışkanlık</string>
+    <string name="category_other">Diğer</string>
+
+    <!-- Streaks -->
+    <string name="streak_current">Mevcut Seri</string>
+    <string name="streak_best">En İyi Seri</string>
+    <string name="streak_days">gün</string>
+    <string name="streak_bonus">Bonus</string>
 
     <!-- Calendar -->
     <string name="calendar_no_completions">Bu gün tamamlanan hedef yok</string>
@@ -151,4 +175,28 @@
     <string name="item_motivation_wall">Motivasyon Duvarı</string>
     <string name="item_inspiration_plant">İlham Bitkisi</string>
     <string name="item_victory_aquarium">Zafer Akvaryumu</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">İrade\'ye Hoş Geldin</string>
+    <string name="onboarding_welcome_desc">İrade gücünü geliştir, hedeflerini takip et ve kendini ödüllendir.</string>
+    <string name="onboarding_focus_title">Odaklanarak Başla</string>
+    <string name="onboarding_focus_desc">Odak oturumları başlat, kıvılcım ve deneyim puanı kazan. Ne kadar odaklanırsan o kadar güçlenirsin.</string>
+    <string name="onboarding_goals_title">Hedefler ve Ödüller</string>
+    <string name="onboarding_goals_desc">Kendi hedeflerini belirle, günlük ve haftalık seriler oluştur. Kazandığın kıvılcımlarla mağazadan ödüller al.</string>
+    <string name="onboarding_start">Başla</string>
+    <string name="onboarding_next">İleri</string>
+    <string name="onboarding_skip">Atla</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ayarlar</string>
+    <string name="settings_notifications">Bildirimler</string>
+    <string name="settings_theme">Tema</string>
+    <string name="settings_theme_system">Sistem</string>
+    <string name="settings_theme_light">Açık</string>
+    <string name="settings_theme_dark">Koyu</string>
+    <string name="settings_export">Verileri Dışa Aktar</string>
+    <string name="settings_export_success">Veriler başarıyla dışa aktarıldı</string>
+    <string name="settings_about">Hakkında</string>
+    <string name="settings_version">Sürüm</string>
+    <string name="settings_back">Geri</string>
 </resources>

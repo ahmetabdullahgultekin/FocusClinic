@@ -52,17 +52,26 @@
 - **Focus screen active goals widget**: Quick-complete up to 5 goals directly from the Focus screen.
 - Localized calendar months and weekday headers via string resources.
 
+### Phase 6: Advanced Goals (Completed)
+- **Recurring goals**: Daily and Weekly recurrence types with `IsGoalCompletableUseCase` enforcing one completion per period
+- **Goal categories**: 6 predefined categories (Health, Productivity, Learning, Fitness, Habits, Other) with horizontal FilterChip filtering
+- **Streak system**: Consecutive-day tracking with `CalculateStreakUseCase`, StreakCard UI (current/best streak), tier-based multipliers (3d→1.1x, 7d→1.25x, 14d→1.5x, 30d→2.0x) applied to completion rewards
+- Domain: `RecurrenceType`, `GoalCategory`, `StreakInfo`, `StreakRules`, `IsGoalCompletableUseCase`, `CalculateStreakUseCase`
+- Data: SQLDelight migration v1→v2 (new columns on `willpower_goals` and `user_profile`)
+
+### Phase 7: Enhanced UX (Completed)
+- **Onboarding flow**: 3-page HorizontalPager (Welcome, Focus, Goals & Rewards) with page indicators, shown once on first launch
+- **Settings screen**: Notification toggle, theme selector (System/Light/Dark), data export button, about section. MVI architecture.
+- **`SettingsRepository`** + `SqlDelightSettingsRepository` for persisting onboarding, theme, notification preferences
+- **Navigation updates**: `Screen.Onboarding` and `Screen.Settings` routes, bottom nav hidden during onboarding/settings
+- **Profile gear icon**: Quick access to Settings from Profile screen
+- String resources for all new UI (Turkish + English)
+
 ## Upcoming
 
-### Phase 6: Advanced Goals
-- Recurring goals (daily, weekly)
-- Goal categories and filtering
-- Goal completion streaks with bonus multipliers
-
-### Phase 7: Enhanced UX
-- Onboarding flow for new users
-- Settings screen (notification preferences, theme selection)
-- Data export (JSON/CSV)
+### Phase 8: Refinement & Platform Features
 - Widget support (Android home screen widget for active goals)
-- Add loading/error/empty states to all screens consistently
-- Accessibility improvements (content descriptions, touch targets)
+- Data export implementation (JSON/CSV file sharing)
+- Accessibility audit (content descriptions, 48dp touch targets, semantics)
+- Loading/error/empty states audit across all screens
+- Performance profiling and optimization

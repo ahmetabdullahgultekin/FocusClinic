@@ -8,6 +8,8 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,15 +28,22 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -50,6 +59,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -58,7 +70,10 @@ import focusclinic.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import com.focusclinic.app.presentation.components.CalendarHeatmap
 import com.focusclinic.app.presentation.components.CelebrationOverlay
+import com.focusclinic.domain.model.GoalCategory
+import com.focusclinic.domain.model.RecurrenceType
 import com.focusclinic.domain.model.WillpowerGoal
+import com.focusclinic.domain.rule.StreakRules
 
 @Composable
 fun GoalsScreen(viewModel: GoalsViewModel) {
@@ -78,6 +93,12 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
             snackbarHostState.showSnackbar(completedSuccessText)
             viewModel.onIntent(GoalsIntent.DismissSuccess)
         }
+    }
+
+    val filteredGoals = if (state.selectedCategory != null) {
+        state.goals.filter { it.category == state.selectedCategory }
+    } else {
+        state.goals
     }
 
     Scaffold(
@@ -106,6 +127,15 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 16.dp),
                 )
+
+                StreakCard(
+                    currentStreak = state.currentStreak,
+                    bestStreak = state.bestStreak,
+                    streakMultiplier = state.streakMultiplier,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -137,6 +167,15 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                     )
                 }
 
+                if (state.availableCategories.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CategoryFilterRow(
+                        categories = state.availableCategories,
+                        selectedCategory = state.selectedCategory,
+                        onCategorySelected = { viewModel.onIntent(GoalsIntent.SelectCategory(it)) },
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(12.dp))
 
                 AnimatedVisibility(
@@ -153,7 +192,7 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                 }
 
                 AnimatedVisibility(
-                    visible = !state.isLoading && state.goals.isEmpty(),
+                    visible = !state.isLoading && filteredGoals.isEmpty(),
                     enter = fadeIn(),
                     exit = fadeOut(),
                 ) {
@@ -161,7 +200,7 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                 }
 
                 AnimatedVisibility(
-                    visible = !state.isLoading && state.goals.isNotEmpty(),
+                    visible = !state.isLoading && filteredGoals.isNotEmpty(),
                     enter = fadeIn(),
                     exit = fadeOut(),
                 ) {
@@ -169,9 +208,11 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                         contentPadding = PaddingValues(vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        items(state.goals, key = { it.id }) { goal ->
+                        items(filteredGoals, key = { it.id }) { goal ->
+                            val isCompletable = goal.id in state.completableGoalIds
                             GoalCard(
                                 goal = goal,
+                                isCompletable = isCompletable,
                                 onComplete = {
                                     viewModel.onIntent(GoalsIntent.ShowCompleteDialog(goal.id))
                                 },
@@ -198,8 +239,10 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
         GoalFormDialog(
             title = stringResource(Res.string.goals_create_title),
             onDismiss = { viewModel.onIntent(GoalsIntent.DismissDialog) },
-            onConfirm = { title, desc, coins, xp ->
-                viewModel.onIntent(GoalsIntent.CreateGoal(title, desc, coins, xp))
+            onConfirm = { title, desc, coins, xp, recurrence, category ->
+                viewModel.onIntent(
+                    GoalsIntent.CreateGoal(title, desc, coins, xp, recurrence, category),
+                )
             },
             isProcessing = state.isProcessing,
         )
@@ -212,9 +255,13 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
             initialDescription = goal.description,
             initialCoinReward = goal.coinReward.amount.toString(),
             initialXpReward = goal.xpReward.value.toString(),
+            initialRecurrenceType = goal.recurrenceType,
+            initialCategory = goal.category,
             onDismiss = { viewModel.onIntent(GoalsIntent.DismissDialog) },
-            onConfirm = { title, desc, coins, xp ->
-                viewModel.onIntent(GoalsIntent.UpdateGoal(goal.id, title, desc, coins, xp))
+            onConfirm = { title, desc, coins, xp, recurrence, category ->
+                viewModel.onIntent(
+                    GoalsIntent.UpdateGoal(goal.id, title, desc, coins, xp, recurrence, category),
+                )
             },
             isProcessing = state.isProcessing,
         )
@@ -227,6 +274,136 @@ fun GoalsScreen(viewModel: GoalsViewModel) {
                 viewModel.onIntent(GoalsIntent.CompleteGoal(goalId, note))
             },
         )
+    }
+}
+
+@Composable
+private fun StreakCard(
+    currentStreak: Int,
+    bestStreak: Int,
+    streakMultiplier: Double,
+    modifier: Modifier = Modifier,
+) {
+    val streakDesc = stringResource(Res.string.streak_current)
+    Card(
+        modifier = modifier.semantics(mergeDescendants = true) {
+            contentDescription = "$streakDesc: $currentStreak"
+        },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
+        ),
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "\uD83D\uDD25",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Text(
+                    text = "$currentStreak ${stringResource(Res.string.streak_days)}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Text(
+                    text = stringResource(Res.string.streak_current),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                )
+            }
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "\uD83C\uDFC6",
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Text(
+                    text = "$bestStreak ${stringResource(Res.string.streak_days)}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Text(
+                    text = stringResource(Res.string.streak_best),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                )
+            }
+
+            if (streakMultiplier > StreakRules.BASE_MULTIPLIER) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        text = "\u26A1",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                    Text(
+                        text = "${streakMultiplier}x",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    Text(
+                        text = stringResource(Res.string.streak_bonus),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CategoryFilterRow(
+    categories: List<String>,
+    selectedCategory: String?,
+    onCategorySelected: (String?) -> Unit,
+) {
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        FilterChip(
+            selected = selectedCategory == null,
+            onClick = { onCategorySelected(null) },
+            label = { Text(stringResource(Res.string.category_all)) },
+        )
+        categories.forEach { category ->
+            FilterChip(
+                selected = selectedCategory == category,
+                onClick = {
+                    onCategorySelected(if (selectedCategory == category) null else category)
+                },
+                label = { Text(categoryDisplayName(category)) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun categoryDisplayName(category: String): String {
+    return when (category) {
+        GoalCategory.HEALTH -> stringResource(Res.string.category_health)
+        GoalCategory.PRODUCTIVITY -> stringResource(Res.string.category_productivity)
+        GoalCategory.LEARNING -> stringResource(Res.string.category_learning)
+        GoalCategory.FITNESS -> stringResource(Res.string.category_fitness)
+        GoalCategory.HABITS -> stringResource(Res.string.category_habits)
+        GoalCategory.OTHER -> stringResource(Res.string.category_other)
+        else -> category
+    }
+}
+
+@Composable
+private fun recurrenceDisplayName(recurrenceType: RecurrenceType): String {
+    return when (recurrenceType) {
+        RecurrenceType.None -> stringResource(Res.string.recurrence_none)
+        RecurrenceType.Daily -> stringResource(Res.string.recurrence_daily)
+        RecurrenceType.Weekly -> stringResource(Res.string.recurrence_weekly)
     }
 }
 
@@ -254,12 +431,15 @@ private fun EmptyGoalsContent() {
 @Composable
 private fun GoalCard(
     goal: WillpowerGoal,
+    isCompletable: Boolean,
     onComplete: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val cardAlpha = if (isCompletable) 1f else 0.6f
+
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().alpha(cardAlpha),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -269,11 +449,19 @@ private fun GoalCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = goal.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Text(
+                            text = goal.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        if (goal.recurrenceType != RecurrenceType.None) {
+                            RecurrenceBadge(goal.recurrenceType)
+                        }
+                    }
                     if (goal.description.isNotBlank()) {
                         Text(
                             text = goal.description,
@@ -283,11 +471,18 @@ private fun GoalCard(
                     }
                 }
                 Row {
-                    IconButton(onClick = onComplete) {
+                    IconButton(
+                        onClick = onComplete,
+                        enabled = isCompletable,
+                    ) {
                         Icon(
                             Icons.Filled.Check,
                             contentDescription = stringResource(Res.string.goals_complete),
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = if (isCompletable) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                            },
                             modifier = Modifier.size(28.dp),
                         )
                     }
@@ -311,6 +506,7 @@ private fun GoalCard(
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = "${stringResource(Res.string.goals_coin_reward)}: ${goal.coinReward.amount}",
@@ -322,11 +518,51 @@ private fun GoalCard(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary,
                 )
+                if (goal.category.isNotBlank()) {
+                    AssistChip(
+                        onClick = {},
+                        label = {
+                            Text(
+                                text = categoryDisplayName(goal.category),
+                                style = MaterialTheme.typography.labelSmall,
+                            )
+                        },
+                    )
+                }
+            }
+            if (!isCompletable && goal.recurrenceType != RecurrenceType.None) {
+                Spacer(modifier = Modifier.height(4.dp))
+                val completedText = when (goal.recurrenceType) {
+                    RecurrenceType.Daily -> stringResource(Res.string.goals_completed_today)
+                    RecurrenceType.Weekly -> stringResource(Res.string.goals_completed_this_week)
+                    else -> ""
+                }
+                Text(
+                    text = "\u2705 $completedText",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }
 }
 
+@Composable
+private fun RecurrenceBadge(recurrenceType: RecurrenceType) {
+    val emoji = when (recurrenceType) {
+        RecurrenceType.Daily -> "\uD83D\uDCC5"
+        RecurrenceType.Weekly -> "\uD83D\uDD04"
+        RecurrenceType.None -> return
+    }
+    val label = recurrenceDisplayName(recurrenceType)
+    Text(
+        text = "$emoji $label",
+        style = MaterialTheme.typography.labelSmall,
+        color = MaterialTheme.colorScheme.primary,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GoalFormDialog(
     title: String,
@@ -334,14 +570,19 @@ private fun GoalFormDialog(
     initialDescription: String = "",
     initialCoinReward: String = "10",
     initialXpReward: String = "20",
+    initialRecurrenceType: RecurrenceType = RecurrenceType.None,
+    initialCategory: String = "",
     onDismiss: () -> Unit,
-    onConfirm: (String, String, Long, Long) -> Unit,
+    onConfirm: (String, String, Long, Long, RecurrenceType, String) -> Unit,
     isProcessing: Boolean,
 ) {
     var goalTitle by remember { mutableStateOf(initialTitle) }
     var goalDescription by remember { mutableStateOf(initialDescription) }
     var coinReward by remember { mutableStateOf(initialCoinReward) }
     var xpReward by remember { mutableStateOf(initialXpReward) }
+    var selectedRecurrence by remember { mutableStateOf(initialRecurrenceType) }
+    var selectedCategory by remember { mutableStateOf(initialCategory) }
+    var categoryDropdownExpanded by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -380,6 +621,75 @@ private fun GoalFormDialog(
                         singleLine = true,
                     )
                 }
+
+                Text(
+                    text = stringResource(Res.string.goals_field_recurrence),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(top = 4.dp),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    RecurrenceType.None.let { type ->
+                        FilterChip(
+                            selected = selectedRecurrence == type,
+                            onClick = { selectedRecurrence = type },
+                            label = { Text(recurrenceDisplayName(type)) },
+                        )
+                    }
+                    RecurrenceType.Daily.let { type ->
+                        FilterChip(
+                            selected = selectedRecurrence == type,
+                            onClick = { selectedRecurrence = type },
+                            label = { Text(recurrenceDisplayName(type)) },
+                        )
+                    }
+                    RecurrenceType.Weekly.let { type ->
+                        FilterChip(
+                            selected = selectedRecurrence == type,
+                            onClick = { selectedRecurrence = type },
+                            label = { Text(recurrenceDisplayName(type)) },
+                        )
+                    }
+                }
+
+                ExposedDropdownMenuBox(
+                    expanded = categoryDropdownExpanded,
+                    onExpandedChange = { categoryDropdownExpanded = it },
+                ) {
+                    OutlinedTextField(
+                        value = if (selectedCategory.isBlank()) {
+                            stringResource(Res.string.category_all)
+                        } else {
+                            categoryDisplayName(selectedCategory)
+                        },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(Res.string.goals_field_category)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = categoryDropdownExpanded) },
+                        modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                            .fillMaxWidth(),
+                    )
+                    ExposedDropdownMenu(
+                        expanded = categoryDropdownExpanded,
+                        onDismissRequest = { categoryDropdownExpanded = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(Res.string.category_all)) },
+                            onClick = {
+                                selectedCategory = GoalCategory.NONE
+                                categoryDropdownExpanded = false
+                            },
+                        )
+                        GoalCategory.PREDEFINED.forEach { category ->
+                            DropdownMenuItem(
+                                text = { Text(categoryDisplayName(category)) },
+                                onClick = {
+                                    selectedCategory = category
+                                    categoryDropdownExpanded = false
+                                },
+                            )
+                        }
+                    }
+                }
             }
         },
         confirmButton = {
@@ -387,7 +697,7 @@ private fun GoalFormDialog(
                 onClick = {
                     val coins = coinReward.toLongOrNull() ?: 0
                     val xp = xpReward.toLongOrNull() ?: 0
-                    onConfirm(goalTitle, goalDescription, coins, xp)
+                    onConfirm(goalTitle, goalDescription, coins, xp, selectedRecurrence, selectedCategory)
                 },
                 enabled = !isProcessing && goalTitle.isNotBlank(),
             ) {

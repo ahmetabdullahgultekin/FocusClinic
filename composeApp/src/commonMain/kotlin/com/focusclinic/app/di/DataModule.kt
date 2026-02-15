@@ -6,12 +6,14 @@ import com.focusclinic.data.database.createDatabase
 import com.focusclinic.data.repository.SqlDelightCustomRewardRepository
 import com.focusclinic.data.repository.SqlDelightFocusSessionRepository
 import com.focusclinic.data.repository.SqlDelightInventoryRepository
+import com.focusclinic.data.repository.SqlDelightSettingsRepository
 import com.focusclinic.data.repository.SqlDelightTransactionRepository
 import com.focusclinic.data.repository.SqlDelightUserProfileRepository
 import com.focusclinic.data.repository.SqlDelightWillpowerGoalRepository
 import com.focusclinic.domain.repository.CustomRewardRepository
 import com.focusclinic.domain.repository.FocusSessionRepository
 import com.focusclinic.domain.repository.InventoryRepository
+import com.focusclinic.domain.repository.SettingsRepository
 import com.focusclinic.domain.repository.TransactionRepository
 import com.focusclinic.domain.repository.UserProfileRepository
 import com.focusclinic.domain.repository.WillpowerGoalRepository
@@ -46,4 +48,5 @@ val dataModule = module {
     single<CustomRewardRepository> { SqlDelightCustomRewardRepository(get()) }
     single<TransactionRepository> { SqlDelightTransactionRepository(get()) }
     single<WillpowerGoalRepository> { SqlDelightWillpowerGoalRepository(get()) }
+    single<SettingsRepository> { SqlDelightSettingsRepository(get()) }
 }

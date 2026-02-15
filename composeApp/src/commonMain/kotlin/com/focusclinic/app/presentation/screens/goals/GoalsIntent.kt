@@ -1,5 +1,6 @@
 package com.focusclinic.app.presentation.screens.goals
 
+import com.focusclinic.domain.model.RecurrenceType
 import com.focusclinic.domain.model.WillpowerGoal
 
 sealed interface GoalsIntent {
@@ -8,6 +9,8 @@ sealed interface GoalsIntent {
         val description: String,
         val coinReward: Long,
         val xpReward: Long,
+        val recurrenceType: RecurrenceType = RecurrenceType.None,
+        val category: String = "",
     ) : GoalsIntent
 
     data class UpdateGoal(
@@ -16,6 +19,8 @@ sealed interface GoalsIntent {
         val description: String,
         val coinReward: Long,
         val xpReward: Long,
+        val recurrenceType: RecurrenceType = RecurrenceType.None,
+        val category: String = "",
     ) : GoalsIntent
 
     data class CompleteGoal(val goalId: String, val note: String = "") : GoalsIntent
@@ -23,6 +28,7 @@ sealed interface GoalsIntent {
     data class StartEditing(val goal: WillpowerGoal) : GoalsIntent
     data class ShowCompleteDialog(val goalId: String) : GoalsIntent
     data class SelectDay(val day: Int) : GoalsIntent
+    data class SelectCategory(val category: String?) : GoalsIntent
     data object ShowCreateDialog : GoalsIntent
     data object DismissDialog : GoalsIntent
     data object DismissCompleteDialog : GoalsIntent

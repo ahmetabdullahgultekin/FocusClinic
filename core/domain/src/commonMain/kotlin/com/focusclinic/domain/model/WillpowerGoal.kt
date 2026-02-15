@@ -10,6 +10,8 @@ data class WillpowerGoal(
     val coinReward: Coin,
     val xpReward: ExperiencePoints,
     val isActive: Boolean,
+    val recurrenceType: RecurrenceType,
+    val category: String,
     val createdAt: Long,
     val updatedAt: Long,
 )

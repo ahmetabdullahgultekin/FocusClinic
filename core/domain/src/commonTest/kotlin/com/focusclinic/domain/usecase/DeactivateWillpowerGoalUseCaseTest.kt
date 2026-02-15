@@ -1,6 +1,7 @@
 package com.focusclinic.domain.usecase
 
 import com.focusclinic.domain.model.DomainResult
+import com.focusclinic.domain.model.RecurrenceType
 import com.focusclinic.domain.model.WillpowerGoal
 import com.focusclinic.domain.test.FakeWillpowerGoalRepository
 import com.focusclinic.domain.valueobject.Coin
@@ -28,6 +29,8 @@ class DeactivateWillpowerGoalUseCaseTest {
             coinReward = Coin(5),
             xpReward = ExperiencePoints(10),
             isActive = true,
+            recurrenceType = RecurrenceType.None,
+            category = "",
             createdAt = 1000L,
             updatedAt = 1000L,
         )

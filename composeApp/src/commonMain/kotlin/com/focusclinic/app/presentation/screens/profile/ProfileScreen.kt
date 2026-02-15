@@ -17,8 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,7 +41,10 @@ import focusclinic.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun ProfileScreen(viewModel: ProfileViewModel) {
+fun ProfileScreen(
+    viewModel: ProfileViewModel,
+    onNavigateToSettings: () -> Unit = {},
+) {
     val state by viewModel.state.collectAsState()
 
     Column(
@@ -47,6 +54,18 @@ fun ProfileScreen(viewModel: ProfileViewModel) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
+            IconButton(onClick = onNavigateToSettings) {
+                Icon(
+                    Icons.Filled.Settings,
+                    contentDescription = stringResource(Res.string.settings_title),
+                )
+            }
+        }
+
         ProfileVisual(
             equipment = state.equipment,
             decorations = state.decorations,

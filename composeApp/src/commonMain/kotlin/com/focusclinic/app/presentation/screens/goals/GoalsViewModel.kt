@@ -3,10 +3,15 @@ package com.focusclinic.app.presentation.screens.goals
 import com.focusclinic.app.platform.HapticFeedback
 import com.focusclinic.domain.model.DomainResult
 import com.focusclinic.domain.model.GoalCompletion
+import com.focusclinic.domain.model.RecurrenceType
+import com.focusclinic.domain.model.WillpowerGoal
 import com.focusclinic.domain.repository.WillpowerGoalRepository
+import com.focusclinic.domain.rule.StreakRules
+import com.focusclinic.domain.usecase.CalculateStreakUseCase
 import com.focusclinic.domain.usecase.CompleteWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.CreateWillpowerGoalUseCase
 import com.focusclinic.domain.usecase.DeactivateWillpowerGoalUseCase
+import com.focusclinic.domain.usecase.IsGoalCompletableUseCase
 import com.focusclinic.domain.usecase.UpdateWillpowerGoalUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +25,8 @@ class GoalsViewModel(
     private val completeWillpowerGoal: CompleteWillpowerGoalUseCase,
     private val updateWillpowerGoal: UpdateWillpowerGoalUseCase,
     private val deactivateWillpowerGoal: DeactivateWillpowerGoalUseCase,
+    private val isGoalCompletable: IsGoalCompletableUseCase,
+    private val calculateStreak: CalculateStreakUseCase,
     private val goalRepository: WillpowerGoalRepository,
     private val hapticFeedback: HapticFeedback,
     private val scope: CoroutineScope,
@@ -43,12 +50,8 @@ class GoalsViewModel(
 
     fun onIntent(intent: GoalsIntent) {
         when (intent) {
-            is GoalsIntent.CreateGoal -> createGoal(
-                intent.title, intent.description, intent.coinReward, intent.xpReward,
-            )
-            is GoalsIntent.UpdateGoal -> updateGoal(
-                intent.goalId, intent.title, intent.description, intent.coinReward, intent.xpReward,
-            )
+            is GoalsIntent.CreateGoal -> createGoal(intent)
+            is GoalsIntent.UpdateGoal -> updateGoal(intent)
             is GoalsIntent.CompleteGoal -> completeGoal(intent.goalId, intent.note)
             is GoalsIntent.DeactivateGoal -> deactivateGoal(intent.goalId)
             is GoalsIntent.StartEditing -> _state.update { it.copy(editingGoal = intent.goal) }
@@ -56,6 +59,9 @@ class GoalsViewModel(
                 it.copy(completingGoalId = intent.goalId)
             }
             is GoalsIntent.SelectDay -> selectDay(intent.day)
+            is GoalsIntent.SelectCategory -> _state.update {
+                it.copy(selectedCategory = intent.category)
+            }
             GoalsIntent.ShowCreateDialog -> _state.update { it.copy(showCreateDialog = true) }
             GoalsIntent.DismissDialog -> _state.update {
                 it.copy(showCreateDialog = false, editingGoal = null)
@@ -79,7 +85,16 @@ class GoalsViewModel(
     private fun observeGoals() {
         scope.launch {
             goalRepository.observeActiveGoals().collect { goals ->
-                _state.update { it.copy(goals = goals, isLoading = false) }
+                val categories = goals.map { it.category }
+                    .filter { it.isNotBlank() }
+                    .distinct()
+                    .sorted()
+
+                _state.update {
+                    it.copy(goals = goals, isLoading = false, availableCategories = categories)
+                }
+
+                refreshCompletability(goals)
             }
         }
     }
@@ -93,7 +108,36 @@ class GoalsViewModel(
                 _state.update {
                     it.copy(recentCompletions = completions, calendarCompletionCounts = counts)
                 }
+
+                refreshStreak()
+                refreshCompletability(_state.value.goals)
             }
+        }
+    }
+
+    private fun refreshStreak() {
+        scope.launch {
+            val streakInfo = calculateStreak()
+            val multiplier = StreakRules.multiplierForStreak(streakInfo.current)
+            _state.update {
+                it.copy(
+                    currentStreak = streakInfo.current,
+                    bestStreak = streakInfo.best,
+                    streakMultiplier = multiplier,
+                )
+            }
+        }
+    }
+
+    private fun refreshCompletability(goals: List<WillpowerGoal>) {
+        scope.launch {
+            val completableIds = mutableSetOf<String>()
+            for (goal in goals) {
+                if (isGoalCompletable(goal)) {
+                    completableIds.add(goal.id)
+                }
+            }
+            _state.update { it.copy(completableGoalIds = completableIds) }
         }
     }
 
@@ -109,13 +153,20 @@ class GoalsViewModel(
         }
     }
 
-    private fun createGoal(title: String, description: String, coinReward: Long, xpReward: Long) {
+    private fun createGoal(intent: GoalsIntent.CreateGoal) {
         if (_state.value.isProcessing) return
         _state.update { it.copy(isProcessing = true) }
 
         scope.launch {
             try {
-                when (val result = createWillpowerGoal(title, description, coinReward, xpReward)) {
+                when (val result = createWillpowerGoal(
+                    title = intent.title,
+                    description = intent.description,
+                    coinReward = intent.coinReward,
+                    xpReward = intent.xpReward,
+                    recurrenceType = intent.recurrenceType,
+                    category = intent.category,
+                )) {
                     is DomainResult.Success -> _state.update {
                         it.copy(showCreateDialog = false, successMessage = result.data.title)
                     }
@@ -129,15 +180,21 @@ class GoalsViewModel(
         }
     }
 
-    private fun updateGoal(
-        goalId: String, title: String, description: String, coinReward: Long, xpReward: Long,
-    ) {
+    private fun updateGoal(intent: GoalsIntent.UpdateGoal) {
         if (_state.value.isProcessing) return
         _state.update { it.copy(isProcessing = true) }
 
         scope.launch {
             try {
-                when (val result = updateWillpowerGoal(goalId, title, description, coinReward, xpReward)) {
+                when (val result = updateWillpowerGoal(
+                    goalId = intent.goalId,
+                    title = intent.title,
+                    description = intent.description,
+                    coinReward = intent.coinReward,
+                    xpReward = intent.xpReward,
+                    recurrenceType = intent.recurrenceType,
+                    category = intent.category,
+                )) {
                     is DomainResult.Success -> _state.update {
                         it.copy(editingGoal = null, successMessage = result.data.title)
                     }

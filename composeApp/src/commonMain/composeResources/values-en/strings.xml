@@ -101,6 +101,30 @@
     <string name="goals_completed_success">Goal completed!</string>
     <string name="goals_completion_note">Note (optional)</string>
     <string name="goals_skip">Skip</string>
+    <string name="goals_field_recurrence">Recurrence</string>
+    <string name="goals_field_category">Category</string>
+    <string name="goals_completed_today">Completed today</string>
+    <string name="goals_completed_this_week">Completed this week</string>
+
+    <!-- Recurrence -->
+    <string name="recurrence_none">One-time</string>
+    <string name="recurrence_daily">Daily</string>
+    <string name="recurrence_weekly">Weekly</string>
+
+    <!-- Categories -->
+    <string name="category_all">All</string>
+    <string name="category_health">Health</string>
+    <string name="category_productivity">Productivity</string>
+    <string name="category_learning">Learning</string>
+    <string name="category_fitness">Fitness</string>
+    <string name="category_habits">Habits</string>
+    <string name="category_other">Other</string>
+
+    <!-- Streaks -->
+    <string name="streak_current">Current Streak</string>
+    <string name="streak_best">Best Streak</string>
+    <string name="streak_days">days</string>
+    <string name="streak_bonus">Bonus</string>
 
     <!-- Calendar -->
     <string name="calendar_no_completions">No completions on this day</string>
@@ -151,4 +175,28 @@
     <string name="item_motivation_wall">Motivation Wall</string>
     <string name="item_inspiration_plant">Inspiration Plant</string>
     <string name="item_victory_aquarium">Victory Aquarium</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_welcome_title">Welcome to Irade</string>
+    <string name="onboarding_welcome_desc">Build your willpower, track your goals, and reward yourself.</string>
+    <string name="onboarding_focus_title">Start by Focusing</string>
+    <string name="onboarding_focus_desc">Start focus sessions, earn sparks and experience points. The more you focus, the stronger you become.</string>
+    <string name="onboarding_goals_title">Goals and Rewards</string>
+    <string name="onboarding_goals_desc">Set your own goals, build daily and weekly streaks. Use your earned sparks to get rewards from the shop.</string>
+    <string name="onboarding_start">Get Started</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_skip">Skip</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_notifications">Notifications</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_export">Export Data</string>
+    <string name="settings_export_success">Data exported successfully</string>
+    <string name="settings_about">About</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_back">Back</string>
 </resources>

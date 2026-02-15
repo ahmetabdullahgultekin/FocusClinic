@@ -19,4 +19,10 @@ sealed interface Screen {
 
     @Serializable
     data object Stats : Screen
+
+    @Serializable
+    data object Onboarding : Screen
+
+    @Serializable
+    data object Settings : Screen
 }
